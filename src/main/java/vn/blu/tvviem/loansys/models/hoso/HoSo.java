@@ -3,13 +3,19 @@ package vn.blu.tvviem.loansys.models.hoso;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.lang.NonNull;
+import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
+import vn.blu.tvviem.loansys.models.taisan.ThongTin;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
+@Table(name = "ho_so")
 public class HoSo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +34,8 @@ public class HoSo {
     @Column(name = "khach_muon_vay", precision = 12)
     private BigDecimal khachMuonVay;
 
-    @Column(name = "ky_han", length = 3)
-    private byte kyHan;
+    @Column(name = "ky_han", columnDefinition = "TINYINT(3)")
+    private int kyHan;
 
     @Column(name = "muc_lai_suat", precision = 7, scale = 5)
     private BigDecimal mucLaiSuat;
@@ -52,9 +58,38 @@ public class HoSo {
     @Column(name = "ghi_chu", length = 400)
     private String ghiChu;
 
+    @ManyToOne
+    @JoinColumn(name="id_loai_hs")
+    private @NonNull LoaiHoSo loaiHoSo;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "gioi_thieu",
+            joinColumns = @JoinColumn(name = "id_khach_hang", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_ho_so", referencedColumnName = "id"))
+    private Set<KhachHang> cacKhachHang;
+
     @LastModifiedDate
     @Column(name = "ngay_cap_nhat")
     private Date ngayCapNhat;
 
+    public HoSo() {
+    }
 
+    public HoSo(Date ngayTao, BigDecimal tongVayQuyDinh, BigDecimal tongVayDeXuat, BigDecimal khachMuonVay, int kyHan, BigDecimal mucLaiSuat, BigDecimal giamDocDuyet, boolean daDuyet, boolean daGiaiNgan, boolean daKeDuNo, boolean daThuHoiNo, String ghiChu, LoaiHoSo loaiHoSo, Set<KhachHang> cacKhachHang, Date ngayCapNhat) {
+        this.ngayTao = ngayTao;
+        this.tongVayQuyDinh = tongVayQuyDinh;
+        this.tongVayDeXuat = tongVayDeXuat;
+        this.khachMuonVay = khachMuonVay;
+        this.kyHan = kyHan;
+        this.mucLaiSuat = mucLaiSuat;
+        this.giamDocDuyet = giamDocDuyet;
+        this.daDuyet = daDuyet;
+        this.daGiaiNgan = daGiaiNgan;
+        this.daKeDuNo = daKeDuNo;
+        this.daThuHoiNo = daThuHoiNo;
+        this.ghiChu = ghiChu;
+        this.loaiHoSo = loaiHoSo;
+        this.cacKhachHang = cacKhachHang;
+        this.ngayCapNhat = ngayCapNhat;
+    }
 }

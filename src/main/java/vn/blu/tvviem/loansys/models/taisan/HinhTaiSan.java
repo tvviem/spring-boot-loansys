@@ -22,4 +22,11 @@ public class HinhTaiSan {
     @Column(name = "duong_dan", length = 60)
     private String duongDan;
 
+    public HinhTaiSan() {
+    }
+
+    public HinhTaiSan(TaiSan taiSan, String duongDan) {
+        this.taiSan = taiSan;
+        this.duongDan = duongDan;
+    }
 }

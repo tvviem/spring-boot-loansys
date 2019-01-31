@@ -13,6 +13,7 @@ public class TaiSanThongTin implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_tai_san")
     private TaiSan taiSan;
+
     @Id
     @ManyToOne
     @JoinColumn(name = "id_thong_tin")

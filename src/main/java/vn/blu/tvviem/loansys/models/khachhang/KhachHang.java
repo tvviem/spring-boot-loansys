@@ -3,16 +3,16 @@ package vn.blu.tvviem.loansys.models.khachhang;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import vn.blu.tvviem.loansys.models.hoso.HoSo;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "khach_hang")
-@EntityListeners(AuditingEntityListener.class)
 public class KhachHang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,10 @@ public class KhachHang {
     private String noiCap;
     @Column(name = "hinh", length = 40)
     private String duongDanHinh;
+
+    @ManyToMany(mappedBy = "cacKhachHang")
+    private Set<HoSo> cacHoSo;
+
     @CreatedDate
     @Column(name = "ngay_tao")
     private Date ngayTao;
