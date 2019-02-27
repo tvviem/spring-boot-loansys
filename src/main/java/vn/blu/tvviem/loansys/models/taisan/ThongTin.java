@@ -1,13 +1,15 @@
 package vn.blu.tvviem.loansys.models.taisan;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
-@Entity
+//@Data
+@Entity @NoArgsConstructor @AllArgsConstructor
 @Table(name = "thong_tin")
 public class ThongTin {
     @Id
@@ -23,12 +25,4 @@ public class ThongTin {
     @ManyToMany(mappedBy = "cacThongTin")
     private Set<TaiSan> cacTaiSan;
 
-    public ThongTin() {
-    }
-
-    public ThongTin(String tenThongTin, LoaiTaiSan loaiTaiSan, Set<TaiSan> cacTaiSan) {
-        this.tenThongTin = tenThongTin;
-        this.loaiTaiSan = loaiTaiSan;
-        this.cacTaiSan = cacTaiSan;
-    }
 }

@@ -7,6 +7,7 @@ import vn.blu.tvviem.loansys.repositories.KhachHangRepo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KhachHangService {
@@ -14,15 +15,30 @@ public class KhachHangService {
     @Autowired
     private KhachHangRepo khachHangRepo;
 
+    // Them khach hang vao CSDL
+    public KhachHang saveKhachHang(KhachHang k) {
+        return khachHangRepo.save(k);
+    }
     // Lay ve danh sach khach hang
     public List<KhachHang> getAllKhachHang() {
-        List<KhachHang> lsKhachHang = new ArrayList<>();
-        khachHangRepo.findAll().forEach(lsKhachHang::add);
-        return lsKhachHang;
+        return khachHangRepo.findAll();
     }
 
-    // Them khach hang vao CSDL
-    public void addKhachHang(KhachHang k) {
-        khachHangRepo.save(k);
+    // Tra ve 1 khach hang voi tham so la id
+    public KhachHang getOneKhachHang(Long id) {
+        /*Optional<KhachHang> kh = khachHangRepo.findById(id);
+        if (!kh.isPresent())
+            return new KhachHang();
+        return kh.get();*/
+
+        // return khachHangRepo.findOne(id);
+        //return khachHangRepo.getOne(id);
+        return khachHangRepo.findById(id).orElse(null);
     }
+
+    // Xoa khach hang
+    public void deleteKhachHang(KhachHang khachHang) {
+        khachHangRepo.delete(khachHang);
+    }
+
 }

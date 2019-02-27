@@ -1,6 +1,6 @@
 package vn.blu.tvviem.loansys.models.hoso;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.lang.NonNull;
@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Table(name = "ho_so")
 public class HoSo {
     @Id
@@ -72,24 +72,4 @@ public class HoSo {
     @Column(name = "ngay_cap_nhat")
     private Date ngayCapNhat;
 
-    public HoSo() {
-    }
-
-    public HoSo(Date ngayTao, BigDecimal tongVayQuyDinh, BigDecimal tongVayDeXuat, BigDecimal khachMuonVay, int kyHan, BigDecimal mucLaiSuat, BigDecimal giamDocDuyet, boolean daDuyet, boolean daGiaiNgan, boolean daKeDuNo, boolean daThuHoiNo, String ghiChu, LoaiHoSo loaiHoSo, Set<KhachHang> cacKhachHang, Date ngayCapNhat) {
-        this.ngayTao = ngayTao;
-        this.tongVayQuyDinh = tongVayQuyDinh;
-        this.tongVayDeXuat = tongVayDeXuat;
-        this.khachMuonVay = khachMuonVay;
-        this.kyHan = kyHan;
-        this.mucLaiSuat = mucLaiSuat;
-        this.giamDocDuyet = giamDocDuyet;
-        this.daDuyet = daDuyet;
-        this.daGiaiNgan = daGiaiNgan;
-        this.daKeDuNo = daKeDuNo;
-        this.daThuHoiNo = daThuHoiNo;
-        this.ghiChu = ghiChu;
-        this.loaiHoSo = loaiHoSo;
-        this.cacKhachHang = cacKhachHang;
-        this.ngayCapNhat = ngayCapNhat;
-    }
 }
