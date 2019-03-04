@@ -18,10 +18,12 @@ public class LoaiTaiSanRest {
     public LoaiTaiSan createLoaiTs(@Valid @RequestBody LoaiTaiSan loaiTaiSan) {
         return loaiTaiSanService.saveLoaiTs(loaiTaiSan);
     }
+
     @GetMapping("/loaitaisans")
     public List<LoaiTaiSan> getAll() {
         return loaiTaiSanService.getAllLoaiTaiSan();
     }
+
     @GetMapping("/loaitaisans/{id}")
     public ResponseEntity<LoaiTaiSan> getLoaiTs(@PathVariable Integer id) {
         LoaiTaiSan loaiTaiSan = loaiTaiSanService.getOneLoaiTs(id);
@@ -30,6 +32,7 @@ public class LoaiTaiSanRest {
         }
         return ResponseEntity.ok(loaiTaiSan);
     }
+
     @PutMapping("/loaitaisans/{id}")
     public ResponseEntity<LoaiTaiSan> updateLoaiTaiSan(@PathVariable Integer id, @Valid @RequestBody LoaiTaiSan
             loaiTaiSanDetail) {
@@ -41,6 +44,7 @@ public class LoaiTaiSanRest {
         LoaiTaiSan loaiTaiSanUpdated = loaiTaiSanService.saveLoaiTs(loaiTaiSanDetail);
         return ResponseEntity.ok(loaiTaiSanUpdated);
     }
+
     @DeleteMapping("/loaitaisans/{id}")
     public ResponseEntity<LoaiTaiSan> deleteLoaiTaiSan(@PathVariable Integer id) {
         LoaiTaiSan loaiTaiSanExist = loaiTaiSanService.getOneLoaiTs(id);
@@ -50,5 +54,4 @@ public class LoaiTaiSanRest {
         loaiTaiSanService.deleteLoaiTaiSan(loaiTaiSanExist);
         return ResponseEntity.ok().build();
     }
-
 }

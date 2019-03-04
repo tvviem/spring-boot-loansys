@@ -3,6 +3,7 @@ package vn.blu.tvviem.loansys.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
+import vn.blu.tvviem.loansys.models.taisan.ThongTin;
 import vn.blu.tvviem.loansys.repositories.LoaiTaiSanRepo;
 
 import java.util.List;

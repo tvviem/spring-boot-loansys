@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 @Entity
@@ -17,19 +18,9 @@ public class LaiSuat {
 
     @EmbeddedId
     private MucLaiSuatId id;
-    /*@ManyToOne
-    @JoinColumn(name="id_loai_ts")
-    private @NonNull
-    LoaiTaiSan loaiTaiSan;
 
-    @CreatedDate
-    @NonNull
-    @Column(name = "ngay_tao")
-    private Date ngayTao;
-    */
-
-    @NonNull
-    @Column(name = "ty_le", precision = 7, scale = 5)
+    @NotBlank
+    @Column(name = "ty_le", precision = 7, scale = 5, nullable = false)
     private BigDecimal tyLe;
 
     public LaiSuat() {

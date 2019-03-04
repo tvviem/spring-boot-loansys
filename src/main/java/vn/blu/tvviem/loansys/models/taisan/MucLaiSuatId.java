@@ -1,35 +1,26 @@
 package vn.blu.tvviem.loansys.models.taisan;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Embeddable
 @Data
+@NoArgsConstructor @AllArgsConstructor
 public class MucLaiSuatId implements Serializable {
 
     @ManyToOne
     @JoinColumn(name="id_loai_ts")
-    private @NonNull
-    LoaiTaiSan loaiTaiSan;
+    private LoaiTaiSan loaiTaiSan;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    @NonNull
-    @Column(name = "ngay_tao")
+    @Column(name = "ngay_tao", nullable = false, updatable = false)
     private Date ngayTao;
-
-    public MucLaiSuatId() {
-    }
-
-    public MucLaiSuatId(LoaiTaiSan loaiTaiSan, Date ngayTao) {
-        this.loaiTaiSan = loaiTaiSan;
-        this.ngayTao = ngayTao;
-    }
 }

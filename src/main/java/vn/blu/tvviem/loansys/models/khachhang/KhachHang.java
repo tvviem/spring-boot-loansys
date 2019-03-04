@@ -3,9 +3,7 @@ package vn.blu.tvviem.loansys.models.khachhang;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import vn.blu.tvviem.loansys.models.AuditModel;
 import vn.blu.tvviem.loansys.models.hoso.HoSo;
 
 import javax.persistence.*;
@@ -16,11 +14,11 @@ import java.util.Set;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Table(name = "khach_hang")
-@EntityListeners(AuditingEntityListener.class) // dùng để tạo CreatedDate and Last...
-public class KhachHang {
+// @EntityListeners(AuditingEntityListener.class) // dùng để tạo CreatedDate and Last...
+public class KhachHang extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank(message = "ho_ten may not be blank")
     @Column(name = "ho_ten", length = 50, nullable = false)
@@ -48,7 +46,7 @@ public class KhachHang {
     @JsonIgnore
     private Set<HoSo> cacHoSo;
 
-    @Temporal(TemporalType.TIMESTAMP)
+   /* @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
     @CreatedDate
     @Column(name = "ngay_tao", nullable = false, updatable = false)
@@ -58,5 +56,5 @@ public class KhachHang {
     @JsonIgnore
     @LastModifiedDate
     @Column(name = "ngay_cap_nhat")
-    private Date ngayCapNhat;
+    private Date ngayCapNhat;*/
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 public class HoSo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @CreatedDate
     @Column(name = "ngay_tao")
