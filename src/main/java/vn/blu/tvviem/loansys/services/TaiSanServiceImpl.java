@@ -49,8 +49,8 @@ public class TaiSanServiceImpl implements TaiSanService {
             taiSanTemp.addThongTin(thongTin, chiTietThongTin.getNoiDung());
         }
 
-        System.out.println("TESTING --- CAC THONG TIN ---------");
-        System.out.println(taiSanTemp.getTaiSanThongTins());
+        /*System.out.println("TESTING --- CAC THONG TIN ---------");
+        System.out.println(taiSanTemp.getTaiSanThongTins());*/
 
         return taiSanRepo.save(taiSanTemp);
     }

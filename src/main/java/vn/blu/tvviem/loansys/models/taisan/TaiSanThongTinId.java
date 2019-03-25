@@ -11,7 +11,6 @@ import java.util.Objects;
 @Data @NoArgsConstructor
 public class TaiSanThongTinId implements Serializable {
 
-
     @Column(name = "id_tai_san")
     private Long taiSanId;
     @Column(name = "id_thong_tin")

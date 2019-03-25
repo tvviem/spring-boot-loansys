@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "tai_san") @Getter @Setter
+@Table(name = "tai_san")
 @Data
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Skip error serializable in bean
@@ -37,12 +37,13 @@ public class TaiSan {
     // QUAN HE VOI BANG chi_tiet_ts
     @NotEmpty
     @OneToMany(
-            mappedBy = "taiSanThongTinId.taiSanId",
+            //mappedBy = "taiSanThongTinId.taiSanId",
+            //mappedBy = "taiSan",
+            mappedBy = "taiSanThongTinIdDebug.taiSan",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    //@Transient
-    private Set<TaiSanThongTin> taiSanThongTins = new HashSet<>(0);
+    private List<TaiSanThongTin> taiSanThongTins = new ArrayList<>();
 
     @OneToMany(mappedBy = "taiSan", cascade = CascadeType.ALL)
     private Set<HinhTaiSan> hinhAnhs = new HashSet<>();
@@ -52,17 +53,23 @@ public class TaiSan {
     @CreatedDate
     @Column(name = "ngay_tao", nullable = false, updatable = false)
     private Date ngayTao;
+
+
     // Them thong tin cua mot tai san voi noi dung tuong ung
     public void addThongTin(ThongTin thongTin, String noiDung) {
-        TaiSanThongTin taiSanThongTin = new TaiSanThongTin(this.id, thongTin.getId(), noiDung);
+        //TaiSanThongTin taiSanThongTin = new TaiSanThongTin(this.id, thongTin.getId(), noiDung);
+        TaiSanThongTin taiSanThongTin = new TaiSanThongTin(this, thongTin, noiDung);
 
         this.taiSanThongTins.add(taiSanThongTin);
     }
     // Remove Thong tin
     public void removeThongTin(ThongTin thongTin) {
         //taiSanThongTin.getThongTin().getCacTaiSan().remove(taiSanThongTin);
-        taiSanThongTins.removeIf(taiSanThongTin -> taiSanThongTin.getTaiSanThongTinId().getTaiSanId().equals(this.id) &&
-                taiSanThongTin.getTaiSanThongTinId().getThongTinId().equals(thongTin.getId()));
+        /*taiSanThongTins.removeIf(taiSanThongTin -> taiSanThongTin.getTaiSanThongTinId().getTaiSanId().equals(this.id) &&
+                taiSanThongTin.getTaiSanThongTinId().getThongTinId().equals(thongTin.getId()));*/
+
+        /*taiSanThongTins.removeIf(taiSanThongTin -> taiSanThongTin.getTaiSan().equals(this) &&
+                taiSanThongTin.getThongTin().equals(thongTin));*/
     }
 
     public TaiSan() {

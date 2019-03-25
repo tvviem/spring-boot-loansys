@@ -17,13 +17,16 @@ import java.util.Date;
 class TaiSanThongTin implements Serializable {
 
     @EmbeddedId
+    private TaiSanThongTinIdDebug taiSanThongTinIdDebug;
+
+    /*@EmbeddedId
     @JsonIgnore
     private TaiSanThongTinId taiSanThongTinId;
 
     @ManyToOne
     @MapsId("thongTinId")
     @JoinColumn(name = "id_thong_tin")
-    private ThongTin thongTin;
+    private ThongTin thongTin;*/
 
     // recursive detect
     /*@ManyToOne
@@ -41,9 +44,18 @@ class TaiSanThongTin implements Serializable {
     @Column(name = "ngay_cap_nhat")
     private Date ngayCapNhat;
 
-    TaiSanThongTin(Long taiSanId, Integer thongTinId, String noiDung) {
-        this.taiSanThongTinId = new TaiSanThongTinId(taiSanId, thongTinId);
+    public TaiSanThongTin(TaiSan taiSan, ThongTin thongTin, @NotBlank String noiDung) {
+        /*this.taiSan = taiSan;
+        this.thongTin = thongTin;*/
+        this.taiSanThongTinIdDebug = new TaiSanThongTinIdDebug();
+        this.taiSanThongTinIdDebug.setTaiSan(taiSan);
+        this.taiSanThongTinIdDebug.setThongTin(thongTin);
         this.noiDung = noiDung;
     }
+
+    /*TaiSanThongTin(Long taiSanId, Integer thongTinId, String noiDung) {
+        this.taiSanThongTinId = new TaiSanThongTinId(taiSanId, thongTinId);
+        this.noiDung = noiDung;
+    }*/
 
 }
