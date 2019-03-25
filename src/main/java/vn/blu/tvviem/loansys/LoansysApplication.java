@@ -12,7 +12,7 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-@EnableJpaAuditing // dùng cho tao @CreatedDate and @LastModifiedDate
+// @EnableJpaAuditing // dùng cho tao @CreatedDate and @LastModifiedDate
 public class LoansysApplication {
 
 	@Autowired

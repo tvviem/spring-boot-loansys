@@ -1,27 +1,18 @@
 package vn.blu.tvviem.loansys.models.taisan;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
 
-@Data
 @Entity
+@Data @NoArgsConstructor
 @Table(name = "thong_tin")
-@NaturalIdCache
-@org.hibernate.annotations.Cache(
-        usage = CacheConcurrencyStrategy.READ_WRITE
-)
-public class ThongTin {
+public class ThongTin implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -36,12 +27,4 @@ public class ThongTin {
     @JsonIgnore
     private LoaiTaiSan loaiTaiSan; // Thong tin cua mot loai tai san
 
-    /*// QUAN HE VOI BANG TAI SAN
-    @OneToMany(
-            mappedBy = "taiSanThongTinId.thongTin",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @JsonIgnore
-    private List<TaiSanThongTin> cacTaiSan = new ArrayList<>();*/
 }

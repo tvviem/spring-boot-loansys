@@ -11,11 +11,12 @@ import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 import vn.blu.tvviem.loansys.models.taisan.ThongTin;
 import vn.blu.tvviem.loansys.repositories.LoaiTaiSanRepo;
 import vn.blu.tvviem.loansys.repositories.ThongTinRepo;
+import vn.blu.tvviem.loansys.services.protocol.ThongTinService;
 
 import java.util.List;
 
 @Service
-public class ThongTinService {
+public class ThongTinServiceImpl implements ThongTinService {
 
     @Autowired
     private ThongTinRepo thongTinRepo;
@@ -56,6 +57,10 @@ public class ThongTinService {
         return thongTinRepo.findByLoaiTaiSanId(loaiTaiSanId);
     }
 
+    public ThongTin getThongTinFromLoaiTaiSan(Integer loaiTaiSanId, Integer thongTinId) {
+        return thongTinRepo.findByIdAndLoaiTaiSanId(thongTinId, loaiTaiSanId).orElseThrow(() -> new ResourceNotFoundException("thongTinId " + thongTinId + " not found of loaiTaiSanId" +
+                loaiTaiSanId));
+    }
 
 
 }

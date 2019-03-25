@@ -1,21 +1,20 @@
 package vn.blu.tvviem.loansys.models.taisan;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
 
-@Entity @NoArgsConstructor @AllArgsConstructor
+@Entity @NoArgsConstructor @Getter @Setter
 @Table(name = "hinh_tai_san")
 public class HinhTaiSan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name="id_tai_san", nullable = false)

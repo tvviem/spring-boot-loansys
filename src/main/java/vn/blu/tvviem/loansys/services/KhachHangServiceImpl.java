@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 import vn.blu.tvviem.loansys.repositories.KhachHangRepo;
+import vn.blu.tvviem.loansys.services.protocol.KhachHangService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class KhachHangService {
+public class KhachHangServiceImpl implements KhachHangService {
 
     @Autowired
     private KhachHangRepo khachHangRepo;

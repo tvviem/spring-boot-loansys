@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
-import vn.blu.tvviem.loansys.services.LoaiTaiSanService;
+import vn.blu.tvviem.loansys.services.protocol.LoaiTaiSanService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,8 +15,9 @@ public class LoaiTaiSanRest {
     private LoaiTaiSanService loaiTaiSanService;
 
     @PostMapping("/loaitaisans")
-    public LoaiTaiSan createLoaiTs(@Valid @RequestBody LoaiTaiSan loaiTaiSan) {
-        return loaiTaiSanService.saveLoaiTs(loaiTaiSan);
+    public ResponseEntity<LoaiTaiSan> createLoaiTs(@Valid @RequestBody LoaiTaiSan loaiTaiSan) {
+        LoaiTaiSan created = loaiTaiSanService.saveLoaiTs(loaiTaiSan);
+        return ResponseEntity.ok(created);
     }
 
     @GetMapping("/loaitaisans")

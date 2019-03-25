@@ -1,6 +1,6 @@
 package vn.blu.tvviem.loansys.models.taisan;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,10 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity @NoArgsConstructor @Setter @Getter
 @Table(name = "loai_tai_san")
@@ -27,8 +24,13 @@ public class LoaiTaiSan {
     @Column(name = "ghi_chu", length = 50)
     private String ghiChu;
 
-    @OneToMany(mappedBy = "loaiTaiSan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "loaiTaiSan", cascade = CascadeType.ALL)
     private Set<ThongTin> thongTins = new HashSet<>();
+
+    public LoaiTaiSan(@NotBlank String tenLoai, String ghiChu) {
+        this.tenLoai = tenLoai;
+        this.ghiChu = ghiChu;
+    }
 
     /*public LoaiTaiSan(String tenLoai, String ghiChu, ThongTin... thongTins) {
         this.tenLoai = tenLoai;

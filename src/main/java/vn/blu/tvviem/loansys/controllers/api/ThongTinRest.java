@@ -1,12 +1,10 @@
 package vn.blu.tvviem.loansys.controllers.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.blu.tvviem.loansys.models.taisan.ThongTin;
-import vn.blu.tvviem.loansys.services.ThongTinService;
+import vn.blu.tvviem.loansys.services.ThongTinServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,12 +14,12 @@ import java.util.List;
 public class ThongTinRest {
 
     @Autowired
-    private ThongTinService thongTinService;
+    private ThongTinServiceImpl thongTinServiceImpl;
 
     // Lay cac thong tin cua mot loai tai san
     @GetMapping("/{loaiTaiSanId}/thongtins")
     public List<ThongTin> getThongTinsByLoaiTaiSanId(@PathVariable Integer loaiTaiSanId) {
-        return thongTinService.findByLoaiTaiSanId(loaiTaiSanId);
+        return thongTinServiceImpl.findByLoaiTaiSanId(loaiTaiSanId);
     }
 
     /*@GetMapping("/{loaiTaiSanId}/thongtins")
@@ -31,23 +29,28 @@ public class ThongTinRest {
     }*/
 
 
+    // Lay mot thong tin cua mot loai tai san
+    @GetMapping("/{loaiTaiSanId}/thongtins/{thongTinId}")
+    public ThongTin getThongTinByLoaiTaiSanId(@PathVariable Integer loaiTaiSanId, @PathVariable Integer thongTinId) {
+        return thongTinServiceImpl.getThongTinFromLoaiTaiSan(loaiTaiSanId, thongTinId);
+    }
 
     // Tao mot thong tin cho mot loai tai san
     @PostMapping("/{loaiTaiSanId}/thongtins")
     public ThongTin createThongTin(@PathVariable Integer loaiTaiSanId, @Valid @RequestBody ThongTin thongTin) {
-        return thongTinService.saveThongTinCuaLoaiTs(thongTin, loaiTaiSanId);
+        return thongTinServiceImpl.saveThongTinCuaLoaiTs(thongTin, loaiTaiSanId);
     }
 
     // Cap nhat thong tin cua mot loai tai san
     @PutMapping("/{loaiTaiSanId}/thongtins/{thongTinId}")
     public ThongTin updateThongTin(@PathVariable Integer loaiTaiSanId, @PathVariable Integer thongTinId, @Valid
     @RequestBody ThongTin thongTinDetail) {
-        return thongTinService.updateThongTinCuaLoaiTs(loaiTaiSanId, thongTinId, thongTinDetail);
+        return thongTinServiceImpl.updateThongTinCuaLoaiTs(loaiTaiSanId, thongTinId, thongTinDetail);
     }
 
     // Xoa thong tin cua mot loai tai san
     @DeleteMapping("/{loaiTaiSanId}/thongtins/{thongTinId}")
     public ResponseEntity<?> deleteThongTin(@PathVariable Integer loaiTaiSanId, @PathVariable Integer thongTinId) {
-        return thongTinService.deleteThongTin(loaiTaiSanId, thongTinId);
+        return thongTinServiceImpl.deleteThongTin(loaiTaiSanId, thongTinId);
     }
 }

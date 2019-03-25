@@ -3,9 +3,10 @@ package vn.blu.tvviem.loansys.controllers.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import vn.blu.tvviem.loansys.models.taisan.TaiSan;
-import vn.blu.tvviem.loansys.services.TaiSanService;
+import vn.blu.tvviem.loansys.services.protocol.TaiSanService;
 import vn.blu.tvviem.loansys.web.dto.ChiTietThongTinDto;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ public class TaiSanRest {
     private TaiSanService taiSanService;
 
     // Tao tai san cho khach hang (hinh anh cap nhat sau)
+    @Transactional
     @PostMapping("/taisans/create/{khachHangId}/{loaiTaiSanId}")
     public TaiSan createTaiSan(@PathVariable Long khachHangId, @PathVariable Integer loaiTaiSanId, @Valid @RequestBody
             ChiTietThongTinDto chiTietThongTinDto) {

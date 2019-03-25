@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.blu.tvviem.loansys.exceptions.ResourceNotFoundException;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 import vn.blu.tvviem.loansys.models.taisan.*;
@@ -11,14 +12,12 @@ import vn.blu.tvviem.loansys.repositories.KhachHangRepo;
 import vn.blu.tvviem.loansys.repositories.LoaiTaiSanRepo;
 import vn.blu.tvviem.loansys.repositories.TaiSanRepo;
 import vn.blu.tvviem.loansys.repositories.ThongTinRepo;
+import vn.blu.tvviem.loansys.services.protocol.TaiSanService;
 import vn.blu.tvviem.loansys.web.dto.ChiTietThongTin;
 import vn.blu.tvviem.loansys.web.dto.ChiTietThongTinDto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Service
-public class TaiSanService {
+@Service("taiSanService")
+public class TaiSanServiceImpl implements TaiSanService {
 
     @Autowired
     private TaiSanRepo taiSanRepo;
@@ -30,6 +29,8 @@ public class TaiSanService {
     private ThongTinRepo thongTinRepo;
 
     // Tao tai san
+    @Override
+    @Transactional
     public TaiSan saveTaiSan(Long khachHangId, Integer loaiTaiSanId, ChiTietThongTinDto chiTietThongTinDto) {
         TaiSan taiSanTemp = new TaiSan();
         KhachHang khachHang = khachHangRepo.findById(khachHangId).orElseThrow(() -> new ResourceNotFoundException("khachHangId: " + khachHangId + " not found"));
@@ -37,26 +38,37 @@ public class TaiSanService {
         taiSanTemp.setKhachHang(khachHang);
         taiSanTemp.setLoaiTaiSan(loaiTaiSan);
 
-        //TaiSan taiSanCreated = taiSanRepo.save(taiSanTemp);
+        /*TaiSan taiSanCreated = taiSanRepo.save(taiSanTemp);
+        taiSanRepo.flush();// De lay id_tai_san truoc khi save chi tiet thong tin*/
+        // List<TaiSanThongTin> taiSanThongTins = new ArrayList<>();
 
-        List<TaiSanThongTin> taiSanThongTins = new ArrayList<>();
         for (ChiTietThongTin chiTietThongTin : chiTietThongTinDto.getCacThongTin()) {
             Integer idThongTin = chiTietThongTin.getIdThongTin();
             ThongTin thongTin = thongTinRepo.findById(chiTietThongTin.getIdThongTin()).orElseThrow(() -> new ResourceNotFoundException("thongTinId: " + idThongTin + " not found"));
 
             taiSanTemp.addThongTin(thongTin, chiTietThongTin.getNoiDung());
         }
-        // taiSanTemp.setCacThongTin(taiSanThongTins);
+
+        System.out.println("TESTING --- CAC THONG TIN ---------");
+        System.out.println(taiSanTemp.getTaiSanThongTins());
+
         return taiSanRepo.save(taiSanTemp);
     }
 
     // Liet ke danh sach cac tai san
+    @Override
     public Page<TaiSan> getAllTaiSanPageable(Pageable pageable) {
         return taiSanRepo.findAll(pageable);
     }
 
     // Tim mot tai san voi id
+    @Override
     public TaiSan findOneByTaiSanId(Long taiSanId) {
         return taiSanRepo.getOne(taiSanId);
+    }
+
+    @Override
+    public boolean deleteTaiSan(Long taiSanId) {
+        return false;
     }
 }

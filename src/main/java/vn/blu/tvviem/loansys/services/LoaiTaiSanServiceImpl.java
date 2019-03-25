@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 import vn.blu.tvviem.loansys.models.taisan.ThongTin;
 import vn.blu.tvviem.loansys.repositories.LoaiTaiSanRepo;
+import vn.blu.tvviem.loansys.services.protocol.LoaiTaiSanService;
 
 import java.util.List;
 
 @Service
-public class LoaiTaiSanService {
+public class LoaiTaiSanServiceImpl implements LoaiTaiSanService {
 
     @Autowired
     private LoaiTaiSanRepo loaiTaiSanRepo;
