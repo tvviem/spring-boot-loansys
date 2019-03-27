@@ -1,15 +1,14 @@
 package vn.blu.tvviem.loansys.models.taisan;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-@Entity @NoArgsConstructor @Getter @Setter
+@Entity
 @Table(name = "hinh_tai_san")
+@Data
 public class HinhTaiSan {
 
     @Id
@@ -17,11 +16,26 @@ public class HinhTaiSan {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="id_tai_san", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="id_tai_san", nullable = false, columnDefinition = "unsigned")
+    @JsonIgnore
     private TaiSan taiSan;
 
-    @Column(name = "duong_dan", length = 60)
-    private String duongDan;
+    @Column(name = "ten_tap_tin", length = 50, nullable = false)
+    private String tenTapTin;
 
+    @Column(name = "loai_hinh", length = 20, nullable = false)
+    private String loaiHinh;
+
+    @Column(name = "noi_dung_hinh", nullable = false)
+    @Lob
+    private byte[] noiDungHinh;
+
+    public HinhTaiSan() {}
+
+    public HinhTaiSan(TaiSan taiSan, String tenTapTin, String loaiHinh, byte[] noiDungHinh) {
+        this.taiSan = taiSan;
+        this.tenTapTin = tenTapTin;
+        this.loaiHinh = loaiHinh;
+        this.noiDungHinh = noiDungHinh;
+    }
 }

@@ -17,22 +17,7 @@ import java.util.Date;
 class TaiSanThongTin implements Serializable {
 
     @EmbeddedId
-    private TaiSanThongTinIdDebug taiSanThongTinIdDebug;
-
-    /*@EmbeddedId
-    @JsonIgnore
     private TaiSanThongTinId taiSanThongTinId;
-
-    @ManyToOne
-    @MapsId("thongTinId")
-    @JoinColumn(name = "id_thong_tin")
-    private ThongTin thongTin;*/
-
-    // recursive detect
-    /*@ManyToOne
-    @MapsId("taiSanId")
-    @JoinColumn(name = "id_tai_san")
-    private TaiSan taiSan;*/
 
     @NotBlank
     @Column(name = "noi_dung", length = 80)
@@ -45,17 +30,10 @@ class TaiSanThongTin implements Serializable {
     private Date ngayCapNhat;
 
     public TaiSanThongTin(TaiSan taiSan, ThongTin thongTin, @NotBlank String noiDung) {
-        /*this.taiSan = taiSan;
-        this.thongTin = thongTin;*/
-        this.taiSanThongTinIdDebug = new TaiSanThongTinIdDebug();
-        this.taiSanThongTinIdDebug.setTaiSan(taiSan);
-        this.taiSanThongTinIdDebug.setThongTin(thongTin);
+        this.taiSanThongTinId = new TaiSanThongTinId();
+        this.taiSanThongTinId.setTaiSan(taiSan);
+        this.taiSanThongTinId.setThongTin(thongTin);
         this.noiDung = noiDung;
     }
-
-    /*TaiSanThongTin(Long taiSanId, Integer thongTinId, String noiDung) {
-        this.taiSanThongTinId = new TaiSanThongTinId(taiSanId, thongTinId);
-        this.noiDung = noiDung;
-    }*/
 
 }

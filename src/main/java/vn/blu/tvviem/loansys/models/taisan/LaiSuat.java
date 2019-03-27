@@ -12,17 +12,10 @@ import java.math.BigDecimal;
 @Table(name = "muc_lai_suat")
 public class LaiSuat {
 
-   /* @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;*/
-
     @EmbeddedId
     private MucLaiSuatId id;
 
     @NotBlank
     @Column(name = "ty_le", precision = 7, scale = 5, nullable = false)
     private BigDecimal tyLe;
-
-    public LaiSuat() {
-    }
 }

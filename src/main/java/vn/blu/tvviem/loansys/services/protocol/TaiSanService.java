@@ -3,11 +3,11 @@ package vn.blu.tvviem.loansys.services.protocol;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.blu.tvviem.loansys.models.taisan.TaiSan;
-import vn.blu.tvviem.loansys.web.dto.ChiTietThongTinDto;
+import vn.blu.tvviem.loansys.web.dto.TaiSanDto;
 
 public interface TaiSanService {
     // Tao tai san
-    TaiSan saveTaiSan(Long khachHangId, Integer loaiTaiSanId, ChiTietThongTinDto chiTietThongTinDto);
+    TaiSan saveTaiSan(TaiSanDto taiSanDto);
 
     // Liet ke danh sach cac tai san
     Page<TaiSan> getAllTaiSanPageable(Pageable pageable);

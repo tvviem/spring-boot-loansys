@@ -37,16 +37,18 @@ public class TaiSan {
     // QUAN HE VOI BANG chi_tiet_ts
     @NotEmpty
     @OneToMany(
-            //mappedBy = "taiSanThongTinId.taiSanId",
-            //mappedBy = "taiSan",
-            mappedBy = "taiSanThongTinIdDebug.taiSan",
+            mappedBy = "taiSanThongTinId.taiSan",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<TaiSanThongTin> taiSanThongTins = new ArrayList<>();
 
-    @OneToMany(mappedBy = "taiSan", cascade = CascadeType.ALL)
-    private Set<HinhTaiSan> hinhAnhs = new HashSet<>();
+    @OneToMany(
+            mappedBy = "taiSan",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<HinhTaiSan> hinhTaiSans = new ArrayList<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
@@ -64,14 +66,17 @@ public class TaiSan {
     }
     // Remove Thong tin
     public void removeThongTin(ThongTin thongTin) {
-        //taiSanThongTin.getThongTin().getCacTaiSan().remove(taiSanThongTin);
-        /*taiSanThongTins.removeIf(taiSanThongTin -> taiSanThongTin.getTaiSanThongTinId().getTaiSanId().equals(this.id) &&
-                taiSanThongTin.getTaiSanThongTinId().getThongTinId().equals(thongTin.getId()));*/
-
-        /*taiSanThongTins.removeIf(taiSanThongTin -> taiSanThongTin.getTaiSan().equals(this) &&
-                taiSanThongTin.getThongTin().equals(thongTin));*/
+        this.taiSanThongTins.removeIf(taiSanThongTin -> taiSanThongTin.getTaiSanThongTinId().getTaiSan().equals(this) &&
+                taiSanThongTin.getTaiSanThongTinId().getThongTin().equals(thongTin));
     }
 
-    public TaiSan() {
+    // check exist thongTin in taiSanThongTins
+    public boolean isExistThongTin(ThongTin thongTin) {
+        return this.taiSanThongTins.stream()
+                .filter(taiSanThongTin -> taiSanThongTin.getTaiSanThongTinId().getThongTin().equals(thongTin))
+                .findFirst()
+                .orElse(null) == null;
     }
+
+
 }

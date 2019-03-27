@@ -16,7 +16,7 @@ import java.util.Date;
 public class MucLaiSuatId implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name="id_loai_ts")
+    @JoinColumn(name="id_loai_ts", columnDefinition = "INT(10) UNSIGNED")
     private LoaiTaiSan loaiTaiSan;
 
     @Temporal(TemporalType.TIMESTAMP)

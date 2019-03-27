@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter @Setter @NoArgsConstructor
-public class ChiTietThongTinDto {
+public class TaiSanDto {
+    private Long khachHangId;
+    private Integer loaiTaiSanId;
     private List<ChiTietThongTin> cacThongTin;
 }

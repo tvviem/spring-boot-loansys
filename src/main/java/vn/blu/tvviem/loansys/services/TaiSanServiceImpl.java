@@ -14,7 +14,7 @@ import vn.blu.tvviem.loansys.repositories.TaiSanRepo;
 import vn.blu.tvviem.loansys.repositories.ThongTinRepo;
 import vn.blu.tvviem.loansys.services.protocol.TaiSanService;
 import vn.blu.tvviem.loansys.web.dto.ChiTietThongTin;
-import vn.blu.tvviem.loansys.web.dto.ChiTietThongTinDto;
+import vn.blu.tvviem.loansys.web.dto.TaiSanDto;
 
 @Service("taiSanService")
 public class TaiSanServiceImpl implements TaiSanService {
@@ -31,10 +31,12 @@ public class TaiSanServiceImpl implements TaiSanService {
     // Tao tai san
     @Override
     @Transactional
-    public TaiSan saveTaiSan(Long khachHangId, Integer loaiTaiSanId, ChiTietThongTinDto chiTietThongTinDto) {
+    public TaiSan saveTaiSan(TaiSanDto taiSanDto) {
         TaiSan taiSanTemp = new TaiSan();
-        KhachHang khachHang = khachHangRepo.findById(khachHangId).orElseThrow(() -> new ResourceNotFoundException("khachHangId: " + khachHangId + " not found"));
-        LoaiTaiSan loaiTaiSan = loaiTaiSanRepo.findById(loaiTaiSanId).orElseThrow(() -> new ResourceNotFoundException("loaiTaiSanId: " + loaiTaiSanId + " not found"));
+        KhachHang khachHang = khachHangRepo.findById(taiSanDto.getKhachHangId()).orElseThrow(() -> new ResourceNotFoundException(
+                "khachHangId: " + taiSanDto.getKhachHangId() + " not found"));
+        LoaiTaiSan loaiTaiSan = loaiTaiSanRepo.findById(taiSanDto.getLoaiTaiSanId()).orElseThrow(() -> new ResourceNotFoundException(
+                "loaiTaiSanId: " + taiSanDto.getLoaiTaiSanId() + " not found"));
         taiSanTemp.setKhachHang(khachHang);
         taiSanTemp.setLoaiTaiSan(loaiTaiSan);
 
@@ -42,15 +44,15 @@ public class TaiSanServiceImpl implements TaiSanService {
         taiSanRepo.flush();// De lay id_tai_san truoc khi save chi tiet thong tin*/
         // List<TaiSanThongTin> taiSanThongTins = new ArrayList<>();
 
-        for (ChiTietThongTin chiTietThongTin : chiTietThongTinDto.getCacThongTin()) {
+        for (ChiTietThongTin chiTietThongTin : taiSanDto.getCacThongTin()) {
             Integer idThongTin = chiTietThongTin.getIdThongTin();
             ThongTin thongTin = thongTinRepo.findById(chiTietThongTin.getIdThongTin()).orElseThrow(() -> new ResourceNotFoundException("thongTinId: " + idThongTin + " not found"));
 
-            taiSanTemp.addThongTin(thongTin, chiTietThongTin.getNoiDung());
+            taiSanTemp.addThongTin(thongTin, chiTietThongTin.getNoiDung()); // need check exist thongTin client-side
         }
 
-        /*System.out.println("TESTING --- CAC THONG TIN ---------");
-        System.out.println(taiSanTemp.getTaiSanThongTins());*/
+        /*ThongTin thongTin = thongTinRepo.findById(10).get();
+        taiSanTemp.removeThongTin(thongTin);*/
 
         return taiSanRepo.save(taiSanTemp);
     }
@@ -69,6 +71,10 @@ public class TaiSanServiceImpl implements TaiSanService {
 
     @Override
     public boolean deleteTaiSan(Long taiSanId) {
-        return false;
+        boolean isExistTaiSan = taiSanRepo.findById(taiSanId).orElse(null) != null;
+        if(isExistTaiSan) {
+            taiSanRepo.deleteById(taiSanId);
+        }
+        return isExistTaiSan;
     }
 }

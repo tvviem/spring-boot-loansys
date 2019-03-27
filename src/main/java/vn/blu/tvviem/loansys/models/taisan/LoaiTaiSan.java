@@ -15,6 +15,7 @@ import java.util.Set;
 public class LoaiTaiSan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT(10) UNSIGNED")
     private int id;
 
     @NotBlank
