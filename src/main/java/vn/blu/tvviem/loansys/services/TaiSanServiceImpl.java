@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.blu.tvviem.loansys.exceptions.ResourceNotFoundException;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 import vn.blu.tvviem.loansys.models.taisan.*;
-import vn.blu.tvviem.loansys.repositories.KhachHangRepo;
-import vn.blu.tvviem.loansys.repositories.LoaiTaiSanRepo;
-import vn.blu.tvviem.loansys.repositories.TaiSanRepo;
-import vn.blu.tvviem.loansys.repositories.ThongTinRepo;
+import vn.blu.tvviem.loansys.repositories.*;
 import vn.blu.tvviem.loansys.services.protocol.TaiSanService;
 import vn.blu.tvviem.loansys.web.dto.ChiTietThongTin;
 import vn.blu.tvviem.loansys.web.dto.TaiSanDto;
@@ -27,6 +24,8 @@ public class TaiSanServiceImpl implements TaiSanService {
     private LoaiTaiSanRepo loaiTaiSanRepo;
     @Autowired
     private ThongTinRepo thongTinRepo;
+    @Autowired
+    private HinhTaiSanService hinhTaiSanService;
 
     // Tao tai san
     @Override
@@ -53,6 +52,9 @@ public class TaiSanServiceImpl implements TaiSanService {
 
         /*ThongTin thongTin = thongTinRepo.findById(10).get();
         taiSanTemp.removeThongTin(thongTin);*/
+
+        // Save hinh anh tai san vao table hinh_tai_san
+
 
         return taiSanRepo.save(taiSanTemp);
     }

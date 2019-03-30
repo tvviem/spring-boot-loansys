@@ -11,14 +11,14 @@ import java.io.Serializable;
 @Data
 public class HinhTaiSan {
 
+    @ManyToOne
+    @JoinColumn(name="id_tai_san", columnDefinition = "bigint(19) unsigned", nullable = false)
+    @JsonIgnore
+    private TaiSan taiSan;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name="id_tai_san", nullable = false, columnDefinition = "unsigned")
-    @JsonIgnore
-    private TaiSan taiSan;
 
     @Column(name = "ten_tap_tin", length = 50, nullable = false)
     private String tenTapTin;

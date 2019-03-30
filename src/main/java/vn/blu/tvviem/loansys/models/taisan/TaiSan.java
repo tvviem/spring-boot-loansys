@@ -2,17 +2,13 @@ package vn.blu.tvviem.loansys.models.taisan;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tai_san")
@@ -48,7 +44,15 @@ public class TaiSan {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<HinhTaiSan> hinhTaiSans = new ArrayList<>();
+
+    @Transient
+    private Integer countHinhTaiSans;
+    @PostLoad
+    private void toComputeSizeOfHinhTaiSans() {
+        countHinhTaiSans = hinhTaiSans.size();
+    }
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
@@ -77,6 +81,4 @@ public class TaiSan {
                 .findFirst()
                 .orElse(null) == null;
     }
-
-
 }
