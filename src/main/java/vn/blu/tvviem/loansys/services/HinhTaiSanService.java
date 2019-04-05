@@ -6,7 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import vn.blu.tvviem.loansys.exceptions.FileStorageException;
 import vn.blu.tvviem.loansys.exceptions.MyFileNotFoundException;
-import vn.blu.tvviem.loansys.exceptions.ResourceNotFoundException;
+import vn.blu.tvviem.loansys.exceptions.types.ResourceNotFoundException;
 import vn.blu.tvviem.loansys.models.taisan.HinhTaiSan;
 import vn.blu.tvviem.loansys.models.taisan.TaiSan;
 import vn.blu.tvviem.loansys.repositories.HinhTaiSanRepo;
@@ -24,6 +24,7 @@ public class HinhTaiSanService {
     @Autowired
     private TaiSanRepo taiSanRepo;
 
+    // Save picture to database
     public HinhTaiSan storeFile(Long taiSanId, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 

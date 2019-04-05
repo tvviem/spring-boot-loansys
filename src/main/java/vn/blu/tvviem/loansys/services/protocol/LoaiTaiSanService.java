@@ -1,5 +1,6 @@
 package vn.blu.tvviem.loansys.services.protocol;
 
+import vn.blu.tvviem.loansys.exceptions.EntityNotFoundException;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface LoaiTaiSanService {
     List<LoaiTaiSan> getAllLoaiTaiSan();
 
     // Tim kiem mot loai tai san
-    LoaiTaiSan getOneLoaiTs(Integer id);
+    LoaiTaiSan getOneLoaiTs(Integer id) throws EntityNotFoundException;
 
     // Xoa loai tai san
     void deleteLoaiTaiSan(LoaiTaiSan loaiTaiSan);

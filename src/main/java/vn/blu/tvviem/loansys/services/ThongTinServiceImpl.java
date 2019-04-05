@@ -1,12 +1,9 @@
 package vn.blu.tvviem.loansys.services;
 
-import jdk.management.resource.ResourceRequestDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import vn.blu.tvviem.loansys.exceptions.ResourceNotFoundException;
+import vn.blu.tvviem.loansys.exceptions.types.ResourceNotFoundException;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 import vn.blu.tvviem.loansys.models.taisan.ThongTin;
 import vn.blu.tvviem.loansys.repositories.LoaiTaiSanRepo;

@@ -15,11 +15,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vn.blu.tvviem.loansys.models.taisan.HinhTaiSan;
 import vn.blu.tvviem.loansys.models.taisan.TaiSan;
 import vn.blu.tvviem.loansys.services.HinhTaiSanService;
+import vn.blu.tvviem.loansys.services.protocol.ChiTietTaiSanService;
 import vn.blu.tvviem.loansys.services.protocol.TaiSanService;
+import vn.blu.tvviem.loansys.web.dto.ChiTietThongTin;
 import vn.blu.tvviem.loansys.web.dto.TaiSanDto;
 import vn.blu.tvviem.loansys.web.dto.UploadFileResponse;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,13 +34,46 @@ public class TaiSanRest {
     private TaiSanService taiSanService;
 
     @Autowired
+    private ChiTietTaiSanService chiTietTaiSanService;
+
+    @Autowired
     private HinhTaiSanService hinhTaiSanService;
+
+    // Lay thong tin chi tiet cua tat ca cac tai san (Pageable)
+    @GetMapping("/taisans/danhsach")
+    public Page<TaiSan> getAllTaiSans(Pageable pageable) {
+        return taiSanService.getAllTaiSanPageable(pageable);
+    }
+
+    // Lay thong tin cua 01 tai san cu the
+    @GetMapping("/taisans/{taiSanId}")
+    public TaiSan getTaiSan(@PathVariable Long taiSanId) {
+        return taiSanService.findOneByTaiSanId(taiSanId);
+    }
 
     // Tao tai san cho khach hang (hinh anh cap nhat sau)
     @Transactional
-    @PostMapping("/taisans/create")
+    @PostMapping("/taisans")
     public TaiSan createTaiSan(@Valid @RequestBody TaiSanDto taiSanDto) {
         return taiSanService.saveTaiSan(taiSanDto);
+    }
+
+    // Cap nhat thong tin tai san
+    @Transactional
+    @PutMapping("/taisans/{taiSanId}")
+    public TaiSan updateTaiSan(@PathVariable Long taiSanId, @Valid @RequestBody TaiSanDto newTaiSanDto) {
+        return taiSanService.updateTaiSanById(taiSanId, newTaiSanDto);
+        //return null;
+    }
+
+    // Xoa tai san biet Id
+    @DeleteMapping("/taisans/{taiSanId}")
+    public ResponseEntity<TaiSan> deleteTaiSan(@PathVariable Long taiSanId) {
+        if(taiSanService.deleteTaiSan(taiSanId)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // Luu hinh anh sau khi luu tai san thanh cong
@@ -64,28 +100,6 @@ public class TaiSanRest {
                 .collect(Collectors.toList());
     }
 
-    // Lay thong tin chi tiet cua tat ca cac tai san (Pageable)
-    @GetMapping("/taisans/danhsach")
-    public Page<TaiSan> getAllTaiSans(Pageable pageable) {
-        return taiSanService.getAllTaiSanPageable(pageable);
-    }
-
-    // Lay thong tin cua 01 tai san cu the
-    @GetMapping("/taisans/{taiSanId}")
-    public TaiSan getTaiSan(@PathVariable Long taiSanId) {
-        return taiSanService.findOneByTaiSanId(taiSanId);
-    }
-
-    // Xoa tai san biet Id
-    @DeleteMapping("/taisans/{taiSanId}")
-    public ResponseEntity<TaiSan> deleteTaiSan(@PathVariable Long taiSanId) {
-        if(taiSanService.deleteTaiSan(taiSanId)) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @GetMapping("/taisans/{taiSanId}/hinhanhs/{position}")
     public ResponseEntity<Resource> xemHinhTaiSan(@PathVariable Long taiSanId, @PathVariable int position) {
         // Load file from database
@@ -98,5 +112,36 @@ public class TaiSanRest {
                 .contentType(MediaType.parseMediaType(hinh1.getLoaiHinh()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + hinh1.getTenTapTin() + "\"")
                 .body(new ByteArrayResource(hinh1.getNoiDungHinh()));
+    }
+
+    /** Cac thao tac voi tung chi tiet tai san */
+    @PostMapping("/taisans/{taiSanId}/luuThongTin")
+    public ResponseEntity<String> themMotThongTinTaiSan(@PathVariable Long taiSanId,
+                                             @RequestBody ChiTietThongTin chiTietThongTin) {
+        boolean result = chiTietTaiSanService.saveThongTinTaiSan(taiSanId, chiTietThongTin.getIdThongTin(),
+                chiTietThongTin.getNoiDung());
+        if(result)
+            return ResponseEntity.created(URI.create("/taisans/"+taiSanId+"/luuThongTin")).build();
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/taisans/{taiSanId}/capNhatThongTin")
+    public ResponseEntity<String> capNhatMotThongTinTaiSan(@PathVariable Long taiSanId,
+                                                           @RequestBody ChiTietThongTin chiTietThongTin) {
+        boolean result = chiTietTaiSanService.saveThongTinTaiSan(taiSanId, chiTietThongTin.getIdThongTin(),
+                chiTietThongTin.getNoiDung());
+        if (result)
+            return ResponseEntity.ok().build();
+
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("/taisans/{taiSanId}/xoaChiTiet/{thongTinId}")
+    public ResponseEntity<String> xoaMotThongTinTaiSan(@PathVariable Long taiSanId, @PathVariable Integer thongTinId) {
+        boolean result = chiTietTaiSanService.deleteThongTinTaiSan(taiSanId, thongTinId);
+        if (result)
+            return ResponseEntity.ok().build();
+
+        return ResponseEntity.badRequest().build();
     }
 }

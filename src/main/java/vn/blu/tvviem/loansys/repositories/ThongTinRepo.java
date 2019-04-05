@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface ThongTinRepo extends JpaRepository<ThongTin, Integer> {
     // List<ThongTin> findAllByLoaiTaiSan(LoaiTaiSan loaiTaiSan);
     List<ThongTin> findByLoaiTaiSanId(Integer loaiTaiSanId);
-    Optional<ThongTin> findByIdAndLoaiTaiSanId(Integer thongTinId, Integer loaiTaiSanId);
+    // Su dung trong ThongTin
+    Optional<ThongTin> findByIdAndLoaiTaiSanId(Integer id, Integer loaiTaiSanId);
 }

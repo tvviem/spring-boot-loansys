@@ -14,7 +14,7 @@ import java.util.Date;
 @Table(name = "chi_tiet_ts")
 @EntityListeners(AuditingEntityListener.class)
 @Data @NoArgsConstructor
-class TaiSanThongTin implements Serializable {
+public class TaiSanThongTin implements Serializable {
 
     @EmbeddedId
     private TaiSanThongTinId taiSanThongTinId;

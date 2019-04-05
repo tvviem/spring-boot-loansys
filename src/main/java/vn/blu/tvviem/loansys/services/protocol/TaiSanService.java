@@ -17,4 +17,6 @@ public interface TaiSanService {
 
     // Xoa mot tai san
     boolean deleteTaiSan(Long taiSanId);
+
+    TaiSan updateTaiSanById(Long taiSanId, TaiSanDto newTaiSanDto);
 }

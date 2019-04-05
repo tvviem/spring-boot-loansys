@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.blu.tvviem.loansys.exceptions.ResourceNotFoundException;
+import vn.blu.tvviem.loansys.exceptions.types.ResourceNotFoundException;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 import vn.blu.tvviem.loansys.models.taisan.*;
 import vn.blu.tvviem.loansys.repositories.*;
@@ -24,14 +24,13 @@ public class TaiSanServiceImpl implements TaiSanService {
     private LoaiTaiSanRepo loaiTaiSanRepo;
     @Autowired
     private ThongTinRepo thongTinRepo;
-    @Autowired
-    private HinhTaiSanService hinhTaiSanService;
 
     // Tao tai san
     @Override
     @Transactional
     public TaiSan saveTaiSan(TaiSanDto taiSanDto) {
         TaiSan taiSanTemp = new TaiSan();
+
         KhachHang khachHang = khachHangRepo.findById(taiSanDto.getKhachHangId()).orElseThrow(() -> new ResourceNotFoundException(
                 "khachHangId: " + taiSanDto.getKhachHangId() + " not found"));
         LoaiTaiSan loaiTaiSan = loaiTaiSanRepo.findById(taiSanDto.getLoaiTaiSanId()).orElseThrow(() -> new ResourceNotFoundException(
@@ -45,16 +44,14 @@ public class TaiSanServiceImpl implements TaiSanService {
 
         for (ChiTietThongTin chiTietThongTin : taiSanDto.getCacThongTin()) {
             Integer idThongTin = chiTietThongTin.getIdThongTin();
-            ThongTin thongTin = thongTinRepo.findById(chiTietThongTin.getIdThongTin()).orElseThrow(() -> new ResourceNotFoundException("thongTinId: " + idThongTin + " not found"));
+            ThongTin thongTin =
+                    thongTinRepo.findByIdAndLoaiTaiSanId(idThongTin, loaiTaiSan.getId()).orElseThrow(() -> new ResourceNotFoundException("thongTinId: " + idThongTin + " not found in loaiTaiSanId: " + loaiTaiSan.getId()));
 
             taiSanTemp.addThongTin(thongTin, chiTietThongTin.getNoiDung()); // need check exist thongTin client-side
         }
 
         /*ThongTin thongTin = thongTinRepo.findById(10).get();
         taiSanTemp.removeThongTin(thongTin);*/
-
-        // Save hinh anh tai san vao table hinh_tai_san
-
 
         return taiSanRepo.save(taiSanTemp);
     }
@@ -78,5 +75,33 @@ public class TaiSanServiceImpl implements TaiSanService {
             taiSanRepo.deleteById(taiSanId);
         }
         return isExistTaiSan;
+    }
+
+    @Override
+    @Transactional
+    public TaiSan updateTaiSanById(Long taiSanId, TaiSanDto newTaiSanDto) {
+
+        TaiSan taiSanUpdated = taiSanRepo.findById(taiSanId).orElseThrow(() -> new ResourceNotFoundException("Khong " +
+                "tim thay TaiSan taiSanId="+taiSanId));
+
+        KhachHang khachHang = khachHangRepo.findById(newTaiSanDto.getKhachHangId()).orElse(null);
+        LoaiTaiSan loaiTaiSan = loaiTaiSanRepo.findById(newTaiSanDto.getLoaiTaiSanId()).orElse(null);
+
+        if(khachHang!=null && loaiTaiSan!=null) {
+            taiSanUpdated.setKhachHang(khachHang);
+            taiSanUpdated.setLoaiTaiSan(loaiTaiSan);
+        }
+
+        taiSanUpdated.getTaiSanThongTins().clear();
+
+        for (ChiTietThongTin chiTietThongTin : newTaiSanDto.getCacThongTin()) {
+            Integer idThongTin = chiTietThongTin.getIdThongTin();
+            ThongTin thongTin = thongTinRepo.findById(idThongTin).orElse(null);
+
+            if(thongTin!=null && loaiTaiSan.getThongTins().contains(thongTin))
+                taiSanUpdated.addThongTin(thongTin, chiTietThongTin.getNoiDung());
+        }
+
+        return taiSanRepo.save(taiSanUpdated);
     }
 }
