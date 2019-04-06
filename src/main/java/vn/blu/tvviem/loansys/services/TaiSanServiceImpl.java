@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.blu.tvviem.loansys.exceptions.types.ResourceNotFoundException;
+import vn.blu.tvviem.loansys.exceptions.EntityNotFoundException;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 import vn.blu.tvviem.loansys.models.taisan.*;
 import vn.blu.tvviem.loansys.repositories.*;
@@ -31,10 +31,11 @@ public class TaiSanServiceImpl implements TaiSanService {
     public TaiSan saveTaiSan(TaiSanDto taiSanDto) {
         TaiSan taiSanTemp = new TaiSan();
 
-        KhachHang khachHang = khachHangRepo.findById(taiSanDto.getKhachHangId()).orElseThrow(() -> new ResourceNotFoundException(
-                "khachHangId: " + taiSanDto.getKhachHangId() + " not found"));
-        LoaiTaiSan loaiTaiSan = loaiTaiSanRepo.findById(taiSanDto.getLoaiTaiSanId()).orElseThrow(() -> new ResourceNotFoundException(
-                "loaiTaiSanId: " + taiSanDto.getLoaiTaiSanId() + " not found"));
+        KhachHang khachHang =
+                khachHangRepo.findById(taiSanDto.getKhachHangId()).orElseThrow(() -> new EntityNotFoundException(KhachHang.class, "khachHangId", taiSanDto.getKhachHangId().toString()));
+        LoaiTaiSan loaiTaiSan =
+                loaiTaiSanRepo.findById(taiSanDto.getLoaiTaiSanId()).orElseThrow(() -> new EntityNotFoundException(LoaiTaiSan.class
+                        , "loaiTaiSanId", taiSanDto.getLoaiTaiSanId().toString()));
         taiSanTemp.setKhachHang(khachHang);
         taiSanTemp.setLoaiTaiSan(loaiTaiSan);
 
@@ -45,7 +46,9 @@ public class TaiSanServiceImpl implements TaiSanService {
         for (ChiTietThongTin chiTietThongTin : taiSanDto.getCacThongTin()) {
             Integer idThongTin = chiTietThongTin.getIdThongTin();
             ThongTin thongTin =
-                    thongTinRepo.findByIdAndLoaiTaiSanId(idThongTin, loaiTaiSan.getId()).orElseThrow(() -> new ResourceNotFoundException("thongTinId: " + idThongTin + " not found in loaiTaiSanId: " + loaiTaiSan.getId()));
+                    thongTinRepo.findByIdAndLoaiTaiSanId(idThongTin, loaiTaiSan.getId()).orElseThrow(() -> new EntityNotFoundException(
+                            ThongTin.class,
+                            "thongTinId", idThongTin.toString() + " not found in loaiTaiSanId: " + loaiTaiSan.getId()));
 
             taiSanTemp.addThongTin(thongTin, chiTietThongTin.getNoiDung()); // need check exist thongTin client-side
         }
@@ -81,8 +84,9 @@ public class TaiSanServiceImpl implements TaiSanService {
     @Transactional
     public TaiSan updateTaiSanById(Long taiSanId, TaiSanDto newTaiSanDto) {
 
-        TaiSan taiSanUpdated = taiSanRepo.findById(taiSanId).orElseThrow(() -> new ResourceNotFoundException("Khong " +
-                "tim thay TaiSan taiSanId="+taiSanId));
+        TaiSan taiSanUpdated =
+                taiSanRepo.findById(taiSanId).orElseThrow(() -> new EntityNotFoundException(TaiSan.class,
+                "taiSanId", "tim thay TaiSan taiSanId="+ taiSanId));
 
         KhachHang khachHang = khachHangRepo.findById(newTaiSanDto.getKhachHangId()).orElse(null);
         LoaiTaiSan loaiTaiSan = loaiTaiSanRepo.findById(newTaiSanDto.getLoaiTaiSanId()).orElse(null);

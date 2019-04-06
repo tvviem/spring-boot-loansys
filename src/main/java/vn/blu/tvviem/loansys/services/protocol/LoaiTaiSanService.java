@@ -13,7 +13,7 @@ public interface LoaiTaiSanService {
     List<LoaiTaiSan> getAllLoaiTaiSan();
 
     // Tim kiem mot loai tai san
-    LoaiTaiSan getOneLoaiTs(Integer id) throws EntityNotFoundException;
+    LoaiTaiSan getOneLoaiTs(Integer id);
 
     // Xoa loai tai san
     void deleteLoaiTaiSan(LoaiTaiSan loaiTaiSan);

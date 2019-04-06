@@ -25,14 +25,7 @@ public class LoaiTaiSanServiceImpl implements LoaiTaiSanService {
         return loaiTaiSanRepo.findAll();
     }
     // Lay ve mot loai tai san
-    public LoaiTaiSan getOneLoaiTs(Integer id) throws EntityNotFoundException {
-        /*Optional<KhachHang> kh = khachHangRepo.findById(id);
-        if (!kh.isPresent())
-            return new KhachHang();
-        return kh.get();*/
-
-        // return khachHangRepo.findOne(id);
-        //return khachHangRepo.getOne(id);
+    public LoaiTaiSan getOneLoaiTs(Integer id) {
         LoaiTaiSan loaiTaiSan =loaiTaiSanRepo.findById(id).orElse(null);
         if(loaiTaiSan==null) {
             throw new EntityNotFoundException(LoaiTaiSan.class, "id", id.toString());

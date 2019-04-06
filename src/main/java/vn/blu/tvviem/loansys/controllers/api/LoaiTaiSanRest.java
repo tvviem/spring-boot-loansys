@@ -31,7 +31,7 @@ public class LoaiTaiSanRest {
     }
 
     @GetMapping("/loaitaisans/{id}")
-    public ResponseEntity<LoaiTaiSan> getLoaiTs(@PathVariable Integer id) throws EntityNotFoundException {
+    public ResponseEntity<LoaiTaiSan> getLoaiTs(@PathVariable Integer id) {
         LoaiTaiSan loaiTaiSan = loaiTaiSanService.getOneLoaiTs(id);
         return ResponseEntity.ok(loaiTaiSan);
     }
