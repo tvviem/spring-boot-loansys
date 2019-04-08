@@ -2,11 +2,8 @@ package vn.blu.tvviem.loansys.controllers.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import vn.blu.tvviem.loansys.exceptions.EntityNotFoundException;
-import vn.blu.tvviem.loansys.exceptions.types.BadRequestException;
-import vn.blu.tvviem.loansys.exceptions.types.ResourceNotFoundException;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 import vn.blu.tvviem.loansys.services.protocol.LoaiTaiSanService;
 

@@ -1,0 +1,56 @@
+package vn.blu.tvviem.loansys.controllers.auth;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import vn.blu.tvviem.loansys.models.baomat.User;
+import vn.blu.tvviem.loansys.repositories.UserRepository;
+import vn.blu.tvviem.loansys.security.JwtTokenProvider;
+import vn.blu.tvviem.loansys.web.dto.AuthRequestInfo;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @PostMapping("/signin")
+    public ResponseEntity signin(@RequestBody AuthRequestInfo data) {
+
+        try {
+            String username = data.getUsername();
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
+            // Set<Role> setOfRoles = this.users.findByUsername(username);
+            User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format(
+                    "Not found roles of username[%s]", username)));
+            //if (user.isEnabled()) {
+                String token = jwtTokenProvider.createToken(username, user.getRoles());
+                Map<Object, Object> model = new HashMap<>();
+                model.put("username", username);
+                model.put("token", token);
+                return ResponseEntity.ok(model);
+            //}
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
+}

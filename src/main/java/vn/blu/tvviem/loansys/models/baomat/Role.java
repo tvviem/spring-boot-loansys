@@ -1,5 +1,6 @@
 package vn.blu.tvviem.loansys.models.baomat;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "vai_tro")
@@ -22,7 +24,8 @@ public class Role {
     private String descriptions;
 
     @ManyToMany(mappedBy = "roles")
-    private Collection<User> users;
+    @JsonBackReference // is the back part of reference – it WILL BE OMITTED from serialization.
+    private Set<User> users;
 
     @ManyToMany
     @JoinTable(
