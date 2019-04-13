@@ -1,6 +1,5 @@
 package vn.blu.tvviem.loansys.services.protocol;
 
-import vn.blu.tvviem.loansys.exceptions.EntityNotFoundException;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 
 import java.util.List;

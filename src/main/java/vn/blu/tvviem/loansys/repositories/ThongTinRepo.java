@@ -1,9 +1,6 @@
 package vn.blu.tvviem.loansys.repositories;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 import vn.blu.tvviem.loansys.models.taisan.ThongTin;
 
 import java.util.List;

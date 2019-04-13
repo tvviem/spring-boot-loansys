@@ -1,15 +1,12 @@
 package vn.blu.tvviem.loansys.models.taisan;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity @NoArgsConstructor
 @Data
@@ -17,17 +14,17 @@ import java.util.Set;
 public class LoaiTaiSan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "INT(10) UNSIGNED")
-    private int id;
+    @Column(columnDefinition = "INT UNSIGNED")
+    private Integer id;
 
     @NotBlank
-    @Column(name = "ten_loai", length = 30, nullable = false)
+    @Column(name = "ten_loai", length = 40, nullable = false, unique = true)
     private String tenLoai;
 
-    @Column(name = "ghi_chu", length = 50)
+    @Column(name = "ghi_chu", length = 80)
     private String ghiChu;
 
-    @OneToMany(mappedBy = "loaiTaiSan", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "loaiTaiSan")
     private List<ThongTin> thongTins = new ArrayList<>();
 
     public LoaiTaiSan(@NotBlank String tenLoai, String ghiChu) {
@@ -35,6 +32,15 @@ public class LoaiTaiSan {
         this.ghiChu = ghiChu;
     }
 
+    public void addThongTin(ThongTin thongTin) {
+        thongTins.add(thongTin);
+        thongTin.setLoaiTaiSan(this);
+    }
+
+    public void removeThongTin(ThongTin thongTin) {
+        thongTins.remove(thongTin);
+        thongTin.setLoaiTaiSan(null);
+    }
     /*public LoaiTaiSan(String tenLoai, String ghiChu, ThongTin... thongTins) {
         this.tenLoai = tenLoai;
         this.ghiChu = ghiChu;

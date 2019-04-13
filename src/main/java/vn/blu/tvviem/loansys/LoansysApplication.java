@@ -4,16 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
-import vn.blu.tvviem.loansys.configs.properties.FileStorageProperties;
+
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+@EntityScan(basePackageClasses = {
+        LoansysApplication.class,
+        Jsr310JpaConverters.class
+})
 // @EnableJpaAuditing // dùng cho tao @CreatedDate and @LastModifiedDate
 public class LoansysApplication {
 
@@ -36,5 +42,10 @@ public class LoansysApplication {
 		resolver.setCacheable(properties.isCache());
 		return resolver;
 	}
+
+    @PostConstruct
+    void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 }
 

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,16 +21,17 @@ public class TaiSanThongTin implements Serializable {
     private TaiSanThongTinId taiSanThongTinId;
 
     @NotBlank
-    @Column(name = "noi_dung", length = 80)
+    @Column(name = "noi_dung", length = 100, nullable = false)
     private String noiDung;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
     @LastModifiedDate
-    @Column(name = "ngay_cap_nhat")
+    @Column(name = "ngay_cap_nhat", nullable = false)
+    @NotNull
     private Date ngayCapNhat;
 
-    public TaiSanThongTin(TaiSan taiSan, ThongTin thongTin, @NotBlank String noiDung) {
+    public TaiSanThongTin(TaiSan taiSan, ThongTin thongTin, String noiDung) {
         this.taiSanThongTinId = new TaiSanThongTinId();
         this.taiSanThongTinId.setTaiSan(taiSan);
         this.taiSanThongTinId.setThongTin(thongTin);

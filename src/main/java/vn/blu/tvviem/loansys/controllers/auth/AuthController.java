@@ -39,15 +39,16 @@ public class AuthController {
             String username = data.getUsername();
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
-            // Set<Role> setOfRoles = this.users.findByUsername(username);
+            // Find User by username
             User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format(
                     "Not found roles of username[%s]", username)));
             //if (user.isEnabled()) {
-                String token = jwtTokenProvider.createToken(username, user.getRoles());
-                Map<Object, Object> model = new HashMap<>();
-                model.put("username", username);
-                model.put("token", token);
-                return ResponseEntity.ok(model);
+            String token = jwtTokenProvider.createToken(username, user.getRoles());
+
+            Map<Object, Object> model = new HashMap<>();
+            model.put("username", username);
+            model.put("token", token);
+            return ResponseEntity.ok(model);
             //}
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");

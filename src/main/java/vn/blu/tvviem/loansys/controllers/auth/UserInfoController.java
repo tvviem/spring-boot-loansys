@@ -21,7 +21,7 @@ public class UserInfoController {
         model.put("username", userDetails.getUsername());
         model.put("roles", userDetails.getAuthorities()
                 .stream()
-                .map(a -> ((GrantedAuthority) a).getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(toList())
         );
         return ResponseEntity.ok(model);

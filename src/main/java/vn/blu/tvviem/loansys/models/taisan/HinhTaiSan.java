@@ -10,13 +10,9 @@ import javax.persistence.*;
 @Data
 public class HinhTaiSan {
 
-    @ManyToOne
-    @JoinColumn(name="id_tai_san", columnDefinition = "bigint(19) unsigned", nullable = false)
-    @JsonIgnore
-    private TaiSan taiSan;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
     @Column(name = "ten_tap_tin", length = 50, nullable = false)
@@ -28,6 +24,11 @@ public class HinhTaiSan {
     @Column(name = "noi_dung_hinh", nullable = false)
     @Lob
     private byte[] noiDungHinh;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tai_san", nullable = false)
+    @JsonIgnore
+    private TaiSan taiSan;
 
     public HinhTaiSan() {}
 

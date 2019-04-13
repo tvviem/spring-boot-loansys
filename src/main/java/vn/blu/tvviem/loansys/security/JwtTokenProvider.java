@@ -16,17 +16,17 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Set;
 
 
 @Component
 public class JwtTokenProvider {
-    @Value("${security.jwt.token.secret-key:secret}")
+
+    @Value("${security.jwt.token.secret-key}")
     private String secretKey;
-    @Value("${security.jwt.token.expire-length:3600000}")
-    private long validityInMilliseconds = 3600000; // 1h
+    @Value("${security.jwt.token.expire-length}")
+    private long validityInMilliseconds; // 900000ms = 15 minute
 
     @Qualifier("customUserDetailsService")
     @Autowired
@@ -34,10 +34,12 @@ public class JwtTokenProvider {
 
     @PostConstruct
     protected void init() {
-        System.out.println(secretKey);
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        /*SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256); //or HS384 or HS512
+        /*System.out.println(secretKey);
+        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256); //or HS384 or HS512
         String base64Key = Encoders.BASE64.encode(key.getEncoded());*/
+        // change
+        /*secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        System.out.println(secretKey);*/
     }
 
     public String createToken(String username, Set<Role> roles) {
@@ -47,17 +49,18 @@ public class JwtTokenProvider {
         // Compute time at invalid token
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        //The JWT signature algorithm we will be using to sign the token
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secretKey);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
+
         return Jwts.builder()//
+                .signWith(signingKey, signatureAlgorithm)//
+                .setHeaderParam("typ", "JWT")
                 .setClaims(claims)//
                 .setIssuedAt(now)//
                 .setExpiration(validity)//
-                .signWith(signingKey, signatureAlgorithm)//
                 .compact();
     }
     Authentication getAuthentication(String token) {
@@ -74,12 +77,18 @@ public class JwtTokenProvider {
         }
         return null;
     }
+
+    /**
+     * @param token The bai gui tu client de chung thuc
+     * @return true if token valid, else user can not use api resources
+     * */
     boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             if (claims.getBody().getExpiration().before(new Date())) {
                 return false;
             }
+
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");

@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.Collection;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -16,28 +17,33 @@ import java.util.Set;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(columnDefinition = "INT UNSIGNED")
+    private Integer id;
 
-    @Column(name = "ten_vai_tro")
-    private String name;
-    @Column(name = "mo_ta_kha_nang")
+    @Column(name = "ten_vai_tro", length = 30)
+    @Enumerated(EnumType.STRING)
+    @NaturalId
+    @NotNull(message = "roleName is required")
+    private RoleName roleName;
+
+    @Column(name = "mo_ta_kha_nang", length = 100)
     private String descriptions;
 
     @ManyToMany(mappedBy = "roles")
     @JsonBackReference // is the back part of reference – it WILL BE OMITTED from serialization.
     private Set<User> users;
 
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(
             name = "vai_tro_quyen",
             joinColumns = @JoinColumn(
                     name = "vai_tro_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "quyen_id", referencedColumnName = "id"))
-    private Collection<Privilege> privileges;
+    private Collection<Privilege> privileges;*/
 
-    public Role(String name, String descriptions) {
-        this.name = name;
+    public Role(RoleName roleName, String descriptions) {
+        this.roleName = roleName;
         this.descriptions = descriptions;
     }
 }
