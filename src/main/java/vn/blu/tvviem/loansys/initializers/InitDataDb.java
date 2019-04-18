@@ -76,14 +76,16 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
 
         // Tạo thông tin khách hàng
         try {
-            if(khachHangRepo.findBySoCmnd("381222111").orElse(null)==null) {
+            if(khachHangRepo.findFirstBySoCmnd("381222111").orElse(null)==null) {
                 KhachHang khachHang1 = new KhachHang("Quách Duy Nam", true, "Phường 3, Sóc Trăng", "0912233445",
-                        "381222111", new SimpleDateFormat("dd/MM/yyyy").parse("19/5/2009"), "Sóc Trăng", "");
+                        "381222111", new SimpleDateFormat("dd/MM/yyyy").parse("19/5/2009"),
+                        "Sóc Trăng", "img/pic1.png");
                 khachHangRepo.save(khachHang1);
             }
-            if(khachHangRepo.findBySoCmnd("381299999").orElse(null)==null) {
+            if(khachHangRepo.findFirstBySoCmnd("381299999").orElse(null)==null) {
                 KhachHang khachHang2 = new KhachHang("Hồ Diệp Mai Quế", false, "Phường 8, Sóc Trăng", "0918899445",
-                        "381299999", new SimpleDateFormat("dd/MM/yyyy").parse("8/12/1995"), "Sóc Trăng", "");
+                        "381299999", new SimpleDateFormat("dd/MM/yyyy").parse("8/12/1995"),
+                        "Sóc Trăng", "img/pic2.png");
                 khachHangRepo.save(khachHang2);
             }
         } catch (ParseException e) {

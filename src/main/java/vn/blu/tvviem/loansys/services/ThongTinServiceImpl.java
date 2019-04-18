@@ -26,7 +26,7 @@ public class ThongTinServiceImpl implements ThongTinService {
         return loaiTaiSanRepo.findById(loaiTaiSanId).map((LoaiTaiSan loaiTaiSan) -> {
             thongTin.setLoaiTaiSan(loaiTaiSan);
             return thongTinRepo.save(thongTin);
-        }).orElseThrow(() -> new ResourceNotFoundException("loaiTaiSanId: " + loaiTaiSanId + " not found"));
+        }).orElse(null);
     }
 
     // Cap nhat thong tin cua mot loai tai san
@@ -44,7 +44,7 @@ public class ThongTinServiceImpl implements ThongTinService {
     public ResponseEntity deleteThongTin(Integer loaiTaiSanId, Integer thongTinId) {
         return thongTinRepo.findByIdAndLoaiTaiSanId(thongTinId, loaiTaiSanId).map(thongTin -> {
             thongTinRepo.delete(thongTin);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build(); // 204
         }).orElseThrow(() -> new ResourceNotFoundException("thongTinId " + thongTinId + " not found of loaiTaiSanId" +
                 loaiTaiSanId));
     }
@@ -55,9 +55,6 @@ public class ThongTinServiceImpl implements ThongTinService {
     }
 
     public ThongTin getThongTinFromLoaiTaiSan(Integer loaiTaiSanId, Integer thongTinId) {
-        return thongTinRepo.findByIdAndLoaiTaiSanId(thongTinId, loaiTaiSanId).orElseThrow(() -> new ResourceNotFoundException("thongTinId " + thongTinId + " not found of loaiTaiSanId" +
-                loaiTaiSanId));
+        return thongTinRepo.findByIdAndLoaiTaiSanId(thongTinId, loaiTaiSanId).orElseThrow(() -> new ResourceNotFoundException("thongTinId " + thongTinId + " not found of loaiTaiSanId" + loaiTaiSanId));
     }
-
-
 }

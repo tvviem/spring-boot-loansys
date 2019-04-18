@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class TaiSanRest {
+@RequestMapping("/v1")
+class TaiSanRest {
 
     @Autowired
     private TaiSanService taiSanService;
@@ -40,7 +41,7 @@ public class TaiSanRest {
     private HinhTaiSanService hinhTaiSanService;
 
     // Lay thong tin chi tiet cua tat ca cac tai san (Pageable)
-    @GetMapping("/taisans/danhsach")
+    @GetMapping("/taisans")
     public Page<TaiSan> getAllTaiSans(Pageable pageable) {
         return taiSanService.getAllTaiSanPageable(pageable);
     }
@@ -77,7 +78,7 @@ public class TaiSanRest {
     }
 
     // Luu hinh anh sau khi luu tai san thanh cong
-    @PostMapping("/taisans/{taiSanId}/luuHinhAnh")
+    @PostMapping("/taisans/{taiSanId}/luu-hinh-anh")
     public UploadFileResponse uploadFile(@PathVariable Long taiSanId, @RequestParam("file") MultipartFile file) {
         HinhTaiSan hinhTaiSanStored = hinhTaiSanService.storeFile(taiSanId, file);
 
@@ -91,7 +92,7 @@ public class TaiSanRest {
                 hinhTaiSanStored.getLoaiHinh(), file.getSize());
     }
 
-    @PostMapping("/taisans/{taiSanId}/luuDanhSachHinh")
+    @PostMapping("/taisans/{taiSanId}/luu-danh-sach-hinh")
     public List<UploadFileResponse> uploadMultipleFiles(@PathVariable Long taiSanId,
                                                         @RequestParam("files") MultipartFile[] files) {
         return Arrays.asList(files)
@@ -115,17 +116,17 @@ public class TaiSanRest {
     }
 
     /** Cac thao tac voi tung chi tiet tai san */
-    @PostMapping("/taisans/{taiSanId}/luuThongTin")
+    @PostMapping("/taisans/{taiSanId}/luu-thong-tin")
     public ResponseEntity<String> themMotThongTinTaiSan(@PathVariable Long taiSanId,
                                              @RequestBody ChiTietThongTin chiTietThongTin) {
         boolean result = chiTietTaiSanService.saveThongTinTaiSan(taiSanId, chiTietThongTin.getIdThongTin(),
                 chiTietThongTin.getNoiDung());
         if(result)
-            return ResponseEntity.created(URI.create("/taisans/"+taiSanId+"/luuThongTin")).build();
+            return ResponseEntity.created(URI.create("/taisans/"+taiSanId+"/luu-thong-tin/")).build();
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping("/taisans/{taiSanId}/capNhatThongTin")
+    @PutMapping("/taisans/{taiSanId}/cap-nhat-thong-tin")
     public ResponseEntity<String> capNhatMotThongTinTaiSan(@PathVariable Long taiSanId,
                                                            @RequestBody ChiTietThongTin chiTietThongTin) {
         boolean result = chiTietTaiSanService.saveThongTinTaiSan(taiSanId, chiTietThongTin.getIdThongTin(),
@@ -136,7 +137,7 @@ public class TaiSanRest {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("/taisans/{taiSanId}/xoaChiTiet/{thongTinId}")
+    @DeleteMapping("/taisans/{taiSanId}/xoa-mot-chi-tiet/{thongTinId}")
     public ResponseEntity<String> xoaMotThongTinTaiSan(@PathVariable Long taiSanId, @PathVariable Integer thongTinId) {
         boolean result = chiTietTaiSanService.deleteThongTinTaiSan(taiSanId, thongTinId);
         if (result)

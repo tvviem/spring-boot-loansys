@@ -13,7 +13,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @RestController
-public class UserInfoController {
+class UserInfoController {
     // When the current user is authenticated, @AuthenticationPrincipal will bind to the current principal.
     @GetMapping("/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){

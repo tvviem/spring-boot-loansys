@@ -16,4 +16,6 @@ public interface LoaiTaiSanService {
 
     // Xoa loai tai san
     void deleteLoaiTaiSan(LoaiTaiSan loaiTaiSan);
+
+    LoaiTaiSan getLoaiTsByTenLoai(String tenLoai);
 }

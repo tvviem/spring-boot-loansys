@@ -24,8 +24,12 @@ import vn.blu.tvviem.loansys.security.JwtTokenProvider;
 )
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    public SecurityConfiguration(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,6 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/**").permitAll() // Test api nhanh, API hoat dong hoan chinh, DELETE DONG NAY
                 .antMatchers("/auth/signin").permitAll()
                 .antMatchers(HttpMethod.GET, "/khachhangs/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/khanghangs/**").hasRole("ADMIN")

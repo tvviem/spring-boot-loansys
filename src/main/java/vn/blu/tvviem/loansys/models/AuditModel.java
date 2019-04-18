@@ -1,5 +1,6 @@
 package vn.blu.tvviem.loansys.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,11 +20,13 @@ public abstract class AuditModel implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
+    @JsonIgnore
     @Column(name = "ngay_tao", nullable = false, updatable = false)
     private Date ngayTao;
 
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
+    @JsonIgnore
     @Column(name = "ngay_cap_nhat", nullable = false)
     private Date ngayCapNhat;
 

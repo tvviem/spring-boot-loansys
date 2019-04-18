@@ -1,9 +1,17 @@
 package vn.blu.tvviem.loansys.exceptions;
 
+import lombok.Data;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.MethodParameter;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -17,17 +25,19 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import vn.blu.tvviem.loansys.security.InvalidJwtAuthenticationException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @ControllerAdvice
-public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
-    // 400
-
+public class WebRestControllerAdvice extends ResponseEntityExceptionHandler implements ResponseBodyAdvice {
+    //400
     @SuppressWarnings("Duplicates")
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
@@ -49,7 +59,7 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleBindException(final BindException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         logger.info(ex.getClass().getName());
         //
-        final List<String> errors = new ArrayList<String>();
+        final List<String> errors = new ArrayList<>();
         for (final FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         }
@@ -67,7 +77,7 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
         final String error = ex.getValue() + " value for " + ex.getPropertyName() + " should be of type " + ex.getRequiredType();
 
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @Override
@@ -76,7 +86,7 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
         //
         final String error = ex.getRequestPartName() + " part is missing";
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @Override
@@ -85,7 +95,7 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
         //
         final String error = ex.getParameterName() + " parameter is missing";
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     //
@@ -104,7 +114,7 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleConstraintViolation(final ConstraintViolationException ex, final WebRequest request) {
         logger.info(ex.getClass().getName());
         //
-        final List<String> errors = new ArrayList<String>();
+        final List<String> errors = new ArrayList<>();
         for (final ConstraintViolation<?> violation : ex.getConstraintViolations()) {
             errors.add(violation.getRootBeanClass().getName() + " " + violation.getPropertyPath() + ": " + violation.getMessage());
         }
@@ -113,15 +123,36 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    /*// 401
+    // 409
+    // Process when duplicate uniqueKey in table or contraints
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(final DataIntegrityViolationException ex, final WebRequest request) {
+        logger.info(ex.getClass().getName());
+
+        final ApiError apiError =
+                new ApiError(HttpStatus.CONFLICT, ex.getCause().getMessage(), Objects.requireNonNull(ex.getRootCause()).getLocalizedMessage());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    // 401 : User chua chung thuc thong tin dang nhap
     @ExceptionHandler(InvalidJwtAuthenticationException.class)
     public ResponseEntity<Object> handleErrorJwtTokenInvalid(final InvalidJwtAuthenticationException ex,
                                                              final WebRequest request) {
 
         final ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), "Error Token " +
                 "Invalid timeout");
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
-    }*/
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    // 403 : User da chung thuc nhung khong co quyen truy cap tai nguyen
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleErrorJwtTokenUnauthorized(final AccessDeniedException ex,
+                                                             final WebRequest request) {
+
+        final ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getLocalizedMessage(), "User's Token is " +
+                "unauthorized for this resources. Please contact your admin to details");
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
 
     // 404
     @Override
@@ -165,12 +196,36 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
     // 500
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
-        logger.info(ex.getClass().getName());
-        logger.error("error", ex);
+        /*logger.info(ex.getClass().getName());
+        logger.error("error", ex);*/
         //
         final ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error " +
                 "occurred in class ["+ex.getClass().getName()+"]");
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @Override
+    public boolean supports(MethodParameter returnType, Class converterType) {
+        return true;
+    }
+
+    @Override
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        int status = HttpStatus.ALREADY_REPORTED.value();
+        if (response instanceof ServletServerHttpResponse) {
+            status = ((ServletServerHttpResponse) response).getServletResponse().getStatus();
+        }
+        //response.setStatusCode(HttpStatus.valueOf(status));
+        // Neu cac xu ly thanh cong thi return kem status, mo rong kem so luong
+        if (HttpStatus.resolve(status) != null && HttpStatus.resolve(status).is2xxSuccessful())
+            return new JSONWrapper<>(HttpStatus.resolve(status), body);
+        else // do ExceptionHandler process
+            return body;
+    }
+
+    @Data
+    private class JSONWrapper<T> {
+        private final HttpStatus status;
+        private final Object data;
+    }
 }
