@@ -66,16 +66,4 @@ public class KhachHang extends AuditModel {
         this.noiCap = noiCap;
         this.duongDanHinh = duongDanHinh;
     }
-
-    /* @Temporal(TemporalType.TIMESTAMP)
-    @JsonIgnore
-    @CreatedDate
-    @Column(name = "ngay_tao", nullable = false, updatable = false)
-    private Date ngayTao;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonIgnore
-    @LastModifiedDate
-    @Column(name = "ngay_cap_nhat")
-    private Date ngayCapNhat;*/
 }

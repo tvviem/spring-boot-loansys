@@ -14,7 +14,6 @@ import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
@@ -32,6 +31,7 @@ public class HoSo {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @Column(name = "ngay_tao", nullable = false)
+    @NotEmpty
     private Date ngayTao;
 
     @Column(name = "tong_vay_quy_dinh", precision = 12)
@@ -80,14 +80,14 @@ public class HoSo {
     private Set<KhachHang> cacKhachHang;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="nhan_vien_tin_dung_id", nullable = false)
+    @JoinColumn(name="id_nhan_vien_tao", nullable = false)
     @JsonIgnore
-    private User nhanVienTinDung; // Thong tin cua mot loai tai san
+    private User nhanVienTinDung;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
     @LastModifiedDate
     @Column(name = "ngay_cap_nhat", nullable = false)
-    @NotNull
+    @NotEmpty
     private Date ngayCapNhat;
 }

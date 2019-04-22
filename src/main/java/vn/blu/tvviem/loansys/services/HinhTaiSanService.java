@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import vn.blu.tvviem.loansys.exceptions.EntityNotFoundException;
 import vn.blu.tvviem.loansys.exceptions.FileStorageException;
 import vn.blu.tvviem.loansys.exceptions.MyFileNotFoundException;
 import vn.blu.tvviem.loansys.exceptions.ResourceNotFoundException;
@@ -15,6 +14,7 @@ import vn.blu.tvviem.loansys.repositories.TaiSanRepo;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class HinhTaiSanService {
@@ -27,7 +27,7 @@ public class HinhTaiSanService {
 
     // Save picture to database
     public HinhTaiSan storeFile(Long taiSanId, MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
         try {
             if(fileName.contains("..")) {
@@ -56,5 +56,9 @@ public class HinhTaiSanService {
                 "FOUND: " + taiSanId));
 
         return hinhTaiSanRepo.findHinhTaiSansByTaiSan(taiSanCreated);
+    }
+
+    public HinhTaiSan getHinhTaiSanByIdAndTaiSan(Long hinhTaiSanId, Long taiSanId) {
+        return hinhTaiSanRepo.findByIdAndTaiSan_Id(hinhTaiSanId, taiSanId).orElse(null);
     }
 }

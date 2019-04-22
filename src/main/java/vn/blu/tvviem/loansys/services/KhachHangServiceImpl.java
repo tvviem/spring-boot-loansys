@@ -23,6 +23,12 @@ public class KhachHangServiceImpl implements KhachHangService {
         return khachHangRepo.save(k);
     }
 
+    // Xoa khach hang
+    @Override
+    public void deleteKhachHang(KhachHang khachHang) {
+        khachHangRepo.delete(khachHang);
+    }
+
     /**
      * @param soCmnd Cung cap chuoi so CMND
      * @apiNote Tim chinh xac 1 khach hang khi biet so CMND
@@ -42,12 +48,6 @@ public class KhachHangServiceImpl implements KhachHangService {
     @Override
     public Page<KhachHang> getAllKhachHang(Pageable pageable) {
         return khachHangRepo.findAll(pageable);
-    }
-
-    // Xoa khach hang
-    @Override
-    public void deleteKhachHang(KhachHang khachHang) {
-        khachHangRepo.delete(khachHang);
     }
 
     // Lay ve danh sach khach hang

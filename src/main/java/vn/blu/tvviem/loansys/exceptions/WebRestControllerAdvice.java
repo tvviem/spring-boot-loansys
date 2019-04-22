@@ -217,9 +217,12 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler impl
         }
         //response.setStatusCode(HttpStatus.valueOf(status));
         // Neu cac xu ly thanh cong thi return kem status, mo rong kem so luong
-        if (HttpStatus.resolve(status) != null && HttpStatus.resolve(status).is2xxSuccessful())
+        // type/subtype; example image/jpeg, image/png...
+        if (HttpStatus.resolve(status) != null &&
+                Objects.requireNonNull(HttpStatus.resolve(status)).is2xxSuccessful() &&
+                !selectedContentType.getType().equals("image"))
             return new JSONWrapper<>(HttpStatus.resolve(status), body);
-        else // do ExceptionHandler process
+        else // do ExceptionHandler process or return Image
             return body;
     }
 
