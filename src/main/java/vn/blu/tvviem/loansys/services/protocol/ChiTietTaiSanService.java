@@ -9,4 +9,5 @@ public interface ChiTietTaiSanService {
     // Xoa 1 thong tin cua tai san da luu
     boolean deleteThongTinTaiSan(Long taiSanId, Integer thongTinId);
 
+    boolean updateThongTinTaiSan(Long taiSanId, Integer thongTinId, String noiDung);
 }

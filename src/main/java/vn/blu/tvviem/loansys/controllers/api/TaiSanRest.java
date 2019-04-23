@@ -156,7 +156,7 @@ class TaiSanRest {
     @PutMapping("/taisans/{taiSanId}/thongtin")
     public ResponseEntity<?> capNhatMotThongTinTaiSan(@PathVariable Long taiSanId,
                                                            @RequestBody ChiTietThongTin chiTietThongTin) {
-        boolean result = chiTietTaiSanService.saveThongTinTaiSan(taiSanId, chiTietThongTin.getIdThongTin(),
+        boolean result = chiTietTaiSanService.updateThongTinTaiSan(taiSanId, chiTietThongTin.getIdThongTin(),
                 chiTietThongTin.getNoiDung());
         if (result) {
             return ResponseEntity.ok().build();

@@ -31,7 +31,7 @@ public class ChiTietTaiSanServiceImpl implements ChiTietTaiSanService {
         // Neu taiSanId va thongTinId hop le va loai tai san co chua thong tin
         if (taiSan!=null && thongTin!=null && taiSan.getLoaiTaiSan().getThongTins().contains(thongTin)) {
             TaiSanThongTin taiSanThongTin = new TaiSanThongTin(taiSan, thongTin, noiDung);
-            thongTinTaiSanRepo.save(taiSanThongTin); // insert or update
+            thongTinTaiSanRepo.save(taiSanThongTin); // insert
             return true;
         }
         return false;
@@ -41,27 +41,30 @@ public class ChiTietTaiSanServiceImpl implements ChiTietTaiSanService {
     public boolean deleteThongTinTaiSan(Long taiSanId, Integer thongTinId) {
         TaiSan taiSan = taiSanRepo.findById(taiSanId).orElse(null);
         ThongTin thongTin = thongTinRepo.findById(thongTinId).orElse(null);
+
         if (taiSan!=null && thongTin!=null) {
             TaiSanThongTinId taiSanThongTinId = new TaiSanThongTinId(taiSan, thongTin);
-            thongTinTaiSanRepo.deleteById(taiSanThongTinId);
-            return true;
+            if(thongTinTaiSanRepo.existsById(taiSanThongTinId)) { // neu co chi tiet nay
+                thongTinTaiSanRepo.deleteById(taiSanThongTinId);
+                return true;
+            }
         }
         return false;
     }
 
-    /*@Override
+    @Override
     public boolean updateThongTinTaiSan(Long taiSanId, Integer thongTinId, String noiDung) {
         TaiSan taiSan = taiSanRepo.findById(taiSanId).orElse(null);
         ThongTin thongTin = thongTinRepo.findById(thongTinId).orElse(null);
-        if (taiSan!=null && thongTin!=null) {
+        if (taiSan!=null && thongTin!=null && taiSan.getLoaiTaiSan().getThongTins().contains(thongTin)) {
             TaiSanThongTinId taiSanThongTinId = new TaiSanThongTinId(taiSan, thongTin);
-            TaiSanThongTin taiSanThongTin = thongTinTaiSanRepo.findById(taiSanThongTinId).orElse(null);
-            if (taiSanThongTin!=null) {
-                taiSanThongTin.setNoiDung(noiDung); // updated
+            // TaiSanThongTin taiSanThongTin = thongTinTaiSanRepo.findById(taiSanThongTinId).orElse(null);
+            if (thongTinTaiSanRepo.existsById(taiSanThongTinId)) { // neu co id trong chi_tiet_ts
+                TaiSanThongTin taiSanThongTin = new TaiSanThongTin(taiSan, thongTin, noiDung);
                 thongTinTaiSanRepo.save(taiSanThongTin); // updated
                 return true;
             }
         }
         return false;
-    }*/
+    }
 }

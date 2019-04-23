@@ -22,7 +22,7 @@ public class ThongTin implements Serializable {
     @Column(name = "ten_thong_tin", length = 80, nullable = false)
     private String tenThongTin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="id_loai_ts", nullable = false)
     @JsonIgnore
     private LoaiTaiSan loaiTaiSan; // Thong tin cua mot loai tai san
