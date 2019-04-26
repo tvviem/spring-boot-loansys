@@ -18,5 +18,9 @@ public interface TaiSanService {
     // Xoa mot tai san
     boolean deleteTaiSan(Long taiSanId);
 
+    // Cap nhat thong tin tai san
     TaiSan updateTaiSanById(Long taiSanId, TaiSanDto newTaiSanDto);
+    // Tim tai san theo thong tin khach hang (cmnd)
+    Iterable<TaiSan> getTaiSansBySoCmndKhachHang(String soCmnd);
+    Iterable<TaiSan> getTaiSansByHoTenKhachHang(String partOfHoTen);
 }

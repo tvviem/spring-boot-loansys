@@ -26,7 +26,7 @@ public class LoansysApplication {
 	@Autowired
 	private ThymeleafProperties properties;
 
-	@Value("${spring.thymeleaf.templates_root:}")
+	@Value("${spring.thymeleaf.templates-root}")
 	private String templatesRoot;
 
     public static void main(String[] args) {

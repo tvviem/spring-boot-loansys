@@ -3,7 +3,6 @@ package vn.blu.tvviem.loansys.configs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -51,11 +50,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll() // Test api nhanh, API hoat dong hoan chinh, DELETE DONG NAY
+                //.antMatchers("/**").permitAll() // Test api nhanh, API hoat dong hoan chinh, DELETE DONG NAY
                 .antMatchers("/auth/signin").permitAll()
-                .antMatchers(HttpMethod.GET, "/khachhangs/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/khanghangs/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/taisans/**").hasRole("ADMIN")
+                //.antMatchers(HttpMethod.GET, "/khachhangs/**").permitAll()
+                //.antMatchers(HttpMethod.DELETE, "/khanghangs/**").hasRole("ADMIN")
+                //.antMatchers(HttpMethod.GET, "/taisans/**").hasRole("ADMIN")
                 .antMatchers("/error").permitAll()
                 .anyRequest().authenticated()
                 .and()

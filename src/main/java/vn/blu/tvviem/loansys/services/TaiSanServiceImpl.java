@@ -108,4 +108,14 @@ public class TaiSanServiceImpl implements TaiSanService {
 
         return taiSanRepo.save(taiSanUpdated);
     }
+
+    @Override
+    public Iterable<TaiSan> getTaiSansBySoCmndKhachHang(String soCmnd) {
+        return null;
+    }
+
+    @Override
+    public Iterable<TaiSan> getTaiSansByHoTenKhachHang(String partOfHoTen) {
+        return null;
+    }
 }

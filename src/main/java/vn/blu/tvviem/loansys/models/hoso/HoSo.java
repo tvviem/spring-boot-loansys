@@ -11,12 +11,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import vn.blu.tvviem.loansys.models.baomat.User;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
+import vn.blu.tvviem.loansys.models.taisan.TaiSan;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
@@ -31,8 +32,12 @@ public class HoSo {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @Column(name = "ngay_tao", nullable = false)
-    @NotEmpty
+    @NotNull
     private Date ngayTao;
+
+    @Column(name = "tong_gia_tri_ts", precision = 12)
+    //@Range(min = 1000000, max = 2000000000, message = "tongGiaTriTaiSan from 1M to 2B")
+    private BigDecimal tongGiaTriTaiSan;
 
     @Column(name = "tong_vay_quy_dinh", precision = 12)
     @Range(min = 1000000, max = 1000000000, message = "tongVayQuyDinh from 1M to 1B")
@@ -70,16 +75,24 @@ public class HoSo {
 
     @ManyToOne
     @JoinColumn(name="id_loai_hs", nullable = false)
-    @NotEmpty
     private LoaiHoSo loaiHoSo;
+
+    // QUAN HE VOI BANG tai_san_ho_so
+    @NotEmpty
+    @OneToMany(
+            mappedBy = "taiSanHoSoId.hoSo",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<TaiSanHoSo> hoSoTaiSans = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "gioi_thieu",
-            joinColumns = @JoinColumn(name = "id_khach_hang", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_ho_so", referencedColumnName = "id"))
-    private Set<KhachHang> cacKhachHang;
+            joinColumns = @JoinColumn(name = "id_ho_so", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_khach_hang", referencedColumnName = "id"))
+    private Set<KhachHang> cacKhachHang = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="id_nhan_vien_tao", nullable = false)
     @JsonIgnore
     private User nhanVienTinDung;
@@ -88,6 +101,19 @@ public class HoSo {
     @JsonIgnore
     @LastModifiedDate
     @Column(name = "ngay_cap_nhat", nullable = false)
-    @NotEmpty
+    @NotNull
     private Date ngayCapNhat;
+
+    // Them tai san cua mot ho so voi noi dung tuong ung
+    public void addTaiSanTheChap(TaiSan taiSan, BigDecimal giaTri, BigDecimal duocPhepVay, BigDecimal deXuat) {
+        //TaiSanThongTin taiSanThongTin = new TaiSanThongTin(this.id, thongTin.getId(), noiDung);
+        TaiSanHoSo taiSanTheChap = new TaiSanHoSo(taiSan, this, giaTri, duocPhepVay, deXuat);
+
+        this.hoSoTaiSans.add(taiSanTheChap);
+    }
+    // Remove Thong tin
+    public void removeTaiSanTheChap(TaiSan taiSan) {
+        this.hoSoTaiSans.removeIf(taiSanTheChap -> taiSanTheChap.getTaiSanHoSoId().getTaiSan().equals(taiSan) &&
+                taiSanTheChap.getTaiSanHoSoId().getHoSo().equals(this));
+    }
 }

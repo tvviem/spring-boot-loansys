@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1")
 class LoaiTaiSanRest {
+
     private final LoaiTaiSanService loaiTaiSanService;
 
     @Autowired
@@ -32,9 +33,6 @@ class LoaiTaiSanRest {
                 .toUri();
         return ResponseEntity.created(location).build(); // return 201 created
     }
-
-    // Save LoaiTaiSan and its ThongTin
-    //public
 
     @GetMapping("/loaitaisans")
     public List<LoaiTaiSan> getAll() {

@@ -14,7 +14,7 @@ public class LoaiHoSo {
     @Column(columnDefinition = "INT UNSIGNED")
     private Integer id;
 
-    @Column(name = "ten_loai_hs", length = 40, nullable = false)
+    @Column(name = "ten_loai_hs", length = 40, nullable = false, unique = true)
     @NotBlank
     private String tenLoaiHoSo;
 

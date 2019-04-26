@@ -37,8 +37,9 @@ class AuthController {
 
         try {
             String username = data.getUsername();
-
+            // Chung thuc thong tin
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
+
             // Find User by username
             User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format(
                     "Not found roles of username[%s]", username)));

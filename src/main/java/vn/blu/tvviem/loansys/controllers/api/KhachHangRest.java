@@ -24,7 +24,7 @@ class KhachHangRest {
     }
 
     @PostMapping("/khachhangs")
-    public ResponseEntity<KhachHang> createKhachHang(@Valid @RequestBody KhachHang k) {
+    public ResponseEntity<?> createKhachHang(@Valid @RequestBody KhachHang k) {
         KhachHang khachHangCreated = khachHangService.saveKhachHang(k);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
