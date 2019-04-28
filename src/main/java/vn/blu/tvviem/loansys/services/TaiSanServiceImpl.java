@@ -102,20 +102,22 @@ public class TaiSanServiceImpl implements TaiSanService {
             Integer idThongTin = chiTietThongTin.getIdThongTin();
             ThongTin thongTin = thongTinRepo.findById(idThongTin).orElse(null);
 
-            if(thongTin!=null && loaiTaiSan.getThongTins().contains(thongTin))
+            if(thongTin!=null && loaiTaiSan!=null && loaiTaiSan.getThongTins().contains(thongTin))
                 taiSanUpdated.addThongTin(thongTin, chiTietThongTin.getNoiDung());
         }
 
         return taiSanRepo.save(taiSanUpdated);
     }
 
+    // Tim tai san theo thong tin so CMND
     @Override
     public Iterable<TaiSan> getTaiSansBySoCmndKhachHang(String soCmnd) {
-        return null;
+        return taiSanRepo.findByKhachHang_SoCmndStartingWith(soCmnd);
     }
 
+    // Tim tai san theo ho ten gan dung
     @Override
     public Iterable<TaiSan> getTaiSansByHoTenKhachHang(String partOfHoTen) {
-        return null;
+        return taiSanRepo.findByKhachHang_HoTenContaining(partOfHoTen);
     }
 }

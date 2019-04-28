@@ -9,10 +9,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-public class HoSoGiamDocRoleDto extends HoSoNhanVienRoleDto {
+public class HoSoGiamDocRoleDto {
     private BigDecimal giamDocDuyet; // So tien duyet
     private boolean daDuyet;
-    private boolean daGiaiNgan;
-    private boolean daKeDuNo;
-    private boolean daThuHoiNo;
+    private String ghiChuThem;
 }

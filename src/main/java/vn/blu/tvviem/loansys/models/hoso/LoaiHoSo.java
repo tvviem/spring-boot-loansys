@@ -20,4 +20,12 @@ public class LoaiHoSo {
 
     @Column(name = "mo_ta_loai", length = 60)
     private String moTaLoaiHs;
+
+    public LoaiHoSo() {
+    }
+
+    public LoaiHoSo(@NotBlank String tenLoaiHoSo, String moTaLoaiHs) {
+        this.tenLoaiHoSo = tenLoaiHoSo;
+        this.moTaLoaiHs = moTaLoaiHs;
+    }
 }

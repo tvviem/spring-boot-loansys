@@ -9,13 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.blu.tvviem.loansys.models.baomat.Role;
 import vn.blu.tvviem.loansys.models.baomat.RoleName;
 import vn.blu.tvviem.loansys.models.baomat.User;
+import vn.blu.tvviem.loansys.models.hoso.LoaiHoSo;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
 import vn.blu.tvviem.loansys.models.taisan.ThongTin;
-import vn.blu.tvviem.loansys.repositories.KhachHangRepo;
-import vn.blu.tvviem.loansys.repositories.LoaiTaiSanRepo;
-import vn.blu.tvviem.loansys.repositories.RoleRepository;
-import vn.blu.tvviem.loansys.repositories.UserRepository;
+import vn.blu.tvviem.loansys.repositories.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,9 +27,12 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
 
     private LoaiTaiSanRepo loaiTaiSanRepo;
     private KhachHangRepo khachHangRepo;
+    @Autowired
+    private LoaiHoSoRepo loaiHoSoRepo;
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -92,6 +93,17 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
             e.printStackTrace();
         }
 
+        // Create các loại hồ sơ
+        if(loaiHoSoRepo.findFirstByTenLoaiHoSo("Vay thế chấp").orElse(null)==null) {
+            LoaiHoSo loaiHoSo1 = new LoaiHoSo("Vay thế chấp", "Vay vốn bằng cách thế chấp tài sản");
+            loaiHoSoRepo.save(loaiHoSo1);
+        }
+
+        if(loaiHoSoRepo.findFirstByTenLoaiHoSo("Vay tín chấp").orElse(null)==null) {
+            LoaiHoSo loaiHoSo2 = new LoaiHoSo("Vay tín chấp", "Sử dụng uy tín để vay vốn");
+            loaiHoSoRepo.save(loaiHoSo2);
+        }
+
         // Create Role
         Role roleAdmin = createRoleIfNotFound(RoleName.ROLE_ADMIN, "Quản lý việc sử dụng hệ thống của người dùng, " +
                 "trạng thái băng thông, khả năng sẵn dùng của hệ thống");
@@ -101,11 +113,16 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
         Role roleXemLai = createRoleIfNotFound(RoleName.ROLE_XEMLAI, "Người dùng có thể xem thông tin nộp lãi của " +
                 "một hồ sơ");
 
-        User user = createUserIfNotFound("ththe1987", "P@ssword87",
-                    "ththe87@gmail.com", "Thế", "Trương Hữu",
-                        new HashSet<>(Arrays.asList(roleAdmin)));
-        User nhanVien = createUserIfNotFound("tvviem87", "123456", "tvviem@gmail.com",
-                    "Viêm", "Triệu Vĩnh", new HashSet<>(Collections.singletonList(roleTinDung)));
+        User user = createUserIfNotFound("admin1987", "Password87","admin87@gmail.com",
+                "Thế", "Trương Hữu", new HashSet<>(Arrays.asList(roleAdmin)));
+        User tinDung = createUserIfNotFound("tindung87", "Password87", "tindung87@gmail.com",
+                    "Tín dụng", "Nhân viên", new HashSet<>(Collections.singletonList(roleTinDung)));
+        User giamDoc = createUserIfNotFound("giamdoc87", "Password87", "giamdoc87@gmail.com",
+                "Giám", "Đốc", new HashSet<>(Collections.singletonList(roleGiamDoc)));
+        User thuNgan = createUserIfNotFound("thungan87", "Password87", "giamdoc@gmail.com",
+                "Thu", "Ngân", new HashSet<>(Collections.singletonList(roleThuNgan)));
+
+
     }
 
     @Transactional

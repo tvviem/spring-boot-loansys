@@ -11,6 +11,7 @@ import vn.blu.tvviem.loansys.models.hoso.HoSo;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.util.Date;
 import java.util.Set;
 
@@ -46,6 +47,7 @@ public class KhachHang extends AuditModel {
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @NotNull(message = "ngayCapCmnd phai co!")
+    @Past
     private Date ngayCapCmnd;
     @Column(name = "noi_cap", length = 30, nullable = false)
     private String noiCap;

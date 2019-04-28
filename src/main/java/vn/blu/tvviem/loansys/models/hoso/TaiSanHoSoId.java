@@ -1,5 +1,6 @@
 package vn.blu.tvviem.loansys.models.hoso;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class TaiSanHoSoId implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_ho_so")
+    @JsonIgnore
     private HoSo hoSo;
 
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -21,6 +23,8 @@ import java.util.*;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@SQLDelete(sql = "UPDATE ho_so SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "ho_so")
 public class HoSo {
@@ -68,6 +72,7 @@ public class HoSo {
     private boolean daKeDuNo;
 
     @Column(name = "da_thu_hoi_no", columnDefinition = "TINYINT(1) default 0") // tinyint(1) in MySQL
+    //@Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean daThuHoiNo;
 
     @Column(name = "ghi_chu", length = 400)
@@ -96,6 +101,9 @@ public class HoSo {
     @JoinColumn(name="id_nhan_vien_tao", nullable = false)
     @JsonIgnore
     private User nhanVienTinDung;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
+    private boolean deleted;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
