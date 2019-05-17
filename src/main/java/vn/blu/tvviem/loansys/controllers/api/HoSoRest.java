@@ -26,7 +26,7 @@ public class HoSoRest {
     // Tao tai san cho khach hang (hinh anh cap nhat sau)
     @Transactional
     @PostMapping("/hosos")
-    public ResponseEntity<?> createTaiSan(@Valid @RequestBody HoSoNhanVienRoleDto hoSoNhanVienRoleDto) {
+    public ResponseEntity<?> createHoSo(@Valid @RequestBody HoSoNhanVienRoleDto hoSoNhanVienRoleDto) {
         HoSo hoSoCreated = hoSoService.taoHoSo(hoSoNhanVienRoleDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -34,6 +34,14 @@ public class HoSoRest {
                 .buildAndExpand(hoSoCreated.getId())
                 .toUri();
         return ResponseEntity.created(location).build(); // return 201 and location in header
+    }
+
+    @Transactional
+    @PutMapping("/hosos/{hoSoId}")
+    public ResponseEntity<HoSo> updateHoSo(@PathVariable Long hoSoId,
+                                               @Valid @RequestBody HoSoNhanVienRoleDto hoSoNhanVienRoleDto) {
+        HoSo hoSoUpdated = hoSoService.updateHoSoById(hoSoId, hoSoNhanVienRoleDto);
+        return ResponseEntity.ok(hoSoUpdated);
     }
 
     // Duyet ho so va tong vay
@@ -81,12 +89,14 @@ public class HoSoRest {
     public ResponseEntity<?> deleteHoSo(@PathVariable Long id) {
         HoSo hoSoFound = hoSoService.findOneHoSoById(id);
         if(hoSoFound==null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); // 404
         }
-        hoSoService.deleteHoSo(id);
-        return ResponseEntity.noContent().build(); // 204
+        if(hoSoService.deleteHoSo(id)) {
+            return ResponseEntity.noContent().build(); // 204
+        } else {
+            return ResponseEntity.badRequest().build(); // 400
+        }
     }
-
 
     @GetMapping("/hosos/taisans/{taiSanId}/tongvay")
     public BigDecimal getTongVay(@PathVariable Long taiSanId) {

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.blu.tvviem.loansys.exceptions.EntityNotFoundException;
 import vn.blu.tvviem.loansys.models.baomat.User;
+import vn.blu.tvviem.loansys.models.hoso.HinhThucLai;
 import vn.blu.tvviem.loansys.models.hoso.HoSo;
 import vn.blu.tvviem.loansys.models.hoso.LoaiHoSo;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
@@ -17,10 +18,7 @@ import vn.blu.tvviem.loansys.models.taisan.TaiSan;
 import vn.blu.tvviem.loansys.repositories.HoSoRepo;
 import vn.blu.tvviem.loansys.repositories.TaiSanHoSoRepo;
 import vn.blu.tvviem.loansys.repositories.UserRepository;
-import vn.blu.tvviem.loansys.services.protocol.HoSoService;
-import vn.blu.tvviem.loansys.services.protocol.KhachHangService;
-import vn.blu.tvviem.loansys.services.protocol.LoaiHoSoService;
-import vn.blu.tvviem.loansys.services.protocol.TaiSanService;
+import vn.blu.tvviem.loansys.services.protocol.*;
 import vn.blu.tvviem.loansys.web.dto.HoSoGiamDocRoleDto;
 import vn.blu.tvviem.loansys.web.dto.HoSoNhanVienRoleDto;
 import vn.blu.tvviem.loansys.web.dto.HoSoThuNganRoleDto;
@@ -44,6 +42,8 @@ public class HoSoServiceImpl implements HoSoService {
     private KhachHangService khachHangService;
     @Autowired
     private TaiSanHoSoRepo taiSanHoSoRepo;
+    @Autowired
+    private HinhThucLaiService hinhThucLaiService;
 
     // TinDung role
     @Override
@@ -56,6 +56,13 @@ public class HoSoServiceImpl implements HoSoService {
             hoSoTemp.setLoaiHoSo(loaiHoSo);
         } else {
             throw new EntityNotFoundException(LoaiHoSo.class, "loaiHoSoId", hoSoNhanVienRoleDto.getLoaiHoSoId().toString());
+        }
+        HinhThucLai hinhThucLai = hinhThucLaiService.getHinhThucLai(hoSoNhanVienRoleDto.getHinhThucLaiId());
+        if(hinhThucLai != null) {
+            hoSoTemp.setHinhThucLai(hinhThucLai);
+        } else {
+            throw new EntityNotFoundException(HinhThucLai.class, "hinhThucLaiId",
+                    hoSoNhanVienRoleDto.getHinhThucLaiId().toString());
         }
 
         User nhanVien = null;
@@ -71,7 +78,54 @@ public class HoSoServiceImpl implements HoSoService {
             hoSoTemp.setNhanVienTinDung(nhanVien);
         }
 
-        // TINH TONG CAC GIA TRI LUU VAO BANG HO_SO
+        // CAP NHAT KHACH HANG GIOI THIEU HO SO VAY
+        mapHoSoNhanVienDtoToEntity(hoSoNhanVienRoleDto, hoSoTemp);
+
+        return hoSoRepo.save(hoSoTemp);
+    }
+
+    @Override
+    @Transactional
+    public HoSo updateHoSoById(Long hoSoId, HoSoNhanVienRoleDto hoSoNhanVienRoleDto) {
+        HoSo hoSoSearch = null;
+        User nhanVien;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails)principal).getUsername();
+            nhanVien = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format(
+                    "Not found username[%s]", username)));
+            hoSoSearch =
+                    hoSoRepo.findByIdAndNhanVienTinDung_Id(hoSoId, nhanVien.getId()).orElseThrow(javax.persistence.EntityNotFoundException::new);
+        }
+        if(hoSoSearch!=null) {
+            LoaiHoSo loaiHoSo = loaiHoSoService.getOneLoaiHS(hoSoNhanVienRoleDto.getLoaiHoSoId());
+            if(loaiHoSo!=null) {
+                hoSoSearch.setLoaiHoSo(loaiHoSo);
+            }
+            HinhThucLai hinhThucLai = hinhThucLaiService.getHinhThucLai(hoSoNhanVienRoleDto.getHinhThucLaiId());
+            if(hinhThucLai != null) {
+                hoSoSearch.setHinhThucLai(hinhThucLai);
+            }
+            // clear khach hang gioi thieu hien tai
+            hoSoSearch.getCacKhachHang().clear();
+            // clear tai san cu
+            hoSoSearch.getHoSoTaiSans().clear();
+            // Giu lai cac ghi chu cu
+            hoSoNhanVienRoleDto.setGhiChu(hoSoSearch.getGhiChu() + "_NV_Update_" + hoSoNhanVienRoleDto.getGhiChu());
+
+            mapHoSoNhanVienDtoToEntity(hoSoNhanVienRoleDto, hoSoSearch);
+            return hoSoRepo.save(hoSoSearch); // success
+        }
+        return null; // fail update HoSo
+    }
+
+    private void mapHoSoNhanVienDtoToEntity(HoSoNhanVienRoleDto hoSoNhanVienRoleDto, HoSo hoSoTemp) {
+        for (String khachHangId : hoSoNhanVienRoleDto.getKhachHangsGioiThieu()) {
+            KhachHang khachHang = khachHangService.getOneKhachHang(Long.parseLong(khachHangId));
+            if(khachHang!=null) {
+                hoSoTemp.getCacKhachHang().add(khachHang); // add khach hang gioi thieu ho so
+            }
+        }
         BigDecimal tongGiaTriTaiSan = new BigDecimal(0);
         BigDecimal tongDuocPhepVay = new BigDecimal(0);
         BigDecimal tongVayDeXuat = new BigDecimal(0);
@@ -86,24 +140,15 @@ public class HoSoServiceImpl implements HoSoService {
             tongDuocPhepVay = tongDuocPhepVay.add(taiSanTheChap.getDuocPhepVay());
             tongVayDeXuat = tongVayDeXuat.add(taiSanTheChap.getDeXuat());
         }
-        // CAP NHAT KHACH HANG GIOI THIEU HO SO VAY
-        for (String khachHangId : hoSoNhanVienRoleDto.getKhachHangsGioiThieu()) {
-            KhachHang khachHang = khachHangService.getOneKhachHang(Long.parseLong(khachHangId));
-            if(khachHang!=null) {
-                hoSoTemp.getCacKhachHang().add(khachHang); // add khach hang gioi thieu ho so
-            }
-        }
 
         hoSoTemp.setKhachMuonVay(hoSoNhanVienRoleDto.getKhachMuonVay());
         hoSoTemp.setKyHan(hoSoNhanVienRoleDto.getKyHan());
         hoSoTemp.setMucLaiSuat(hoSoNhanVienRoleDto.getMucLaiSuat());
-
+        hoSoTemp.setMucHoaHong(hoSoNhanVienRoleDto.getMucHoaHong());
         hoSoTemp.setTongGiaTriTaiSan(tongGiaTriTaiSan);
         hoSoTemp.setTongVayQuyDinh(tongDuocPhepVay);
         hoSoTemp.setTongVayDeXuat(tongVayDeXuat);
         hoSoTemp.setGhiChu(hoSoNhanVienRoleDto.getGhiChu());
-
-        return hoSoRepo.save(hoSoTemp);
     }
 
     // Giam doc role
@@ -114,7 +159,7 @@ public class HoSoServiceImpl implements HoSoService {
         if(hoSoSearch!=null) {
             hoSoSearch.setGiamDocDuyet(hoSoGiamDocRoleDto.getGiamDocDuyet());
             hoSoSearch.setDaDuyet(true);
-            hoSoSearch.setGhiChu(hoSoSearch.getGhiChu()+hoSoGiamDocRoleDto.getGhiChuThem());
+            hoSoSearch.setGhiChu(hoSoSearch.getGhiChu()+"_GĐ_Update_"+hoSoGiamDocRoleDto.getGhiChuThem());
             return hoSoRepo.save(hoSoSearch);
         }
         return null; // khong tim thay ho so id
@@ -177,4 +222,5 @@ public class HoSoServiceImpl implements HoSoService {
         }*/
         return taiSanHoSoRepo.sumDuocPhepVayByTaiSanIdAndThuHoiNo(taiSanId, false);
     }
+
 }

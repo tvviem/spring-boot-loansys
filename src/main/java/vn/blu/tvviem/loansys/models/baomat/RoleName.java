@@ -8,5 +8,5 @@ public enum RoleName {
     ROLE_GIAMDOC,
     ROLE_TINDUNG,
     ROLE_THUNGAN,
-    ROLE_XEMLAI // xem trạng thái nộp lãi hồ sơ
+    ROLE_CONGTACVIEN // xem trạng thái nộp lãi hồ sơ
 }

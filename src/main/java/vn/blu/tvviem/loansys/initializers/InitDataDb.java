@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.blu.tvviem.loansys.models.baomat.Role;
 import vn.blu.tvviem.loansys.models.baomat.RoleName;
 import vn.blu.tvviem.loansys.models.baomat.User;
+import vn.blu.tvviem.loansys.models.hoso.HinhThucLai;
 import vn.blu.tvviem.loansys.models.hoso.LoaiHoSo;
 import vn.blu.tvviem.loansys.models.khachhang.KhachHang;
 import vn.blu.tvviem.loansys.models.taisan.LoaiTaiSan;
@@ -29,6 +30,8 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
     private KhachHangRepo khachHangRepo;
     @Autowired
     private LoaiHoSoRepo loaiHoSoRepo;
+    @Autowired
+    private HinhThucLaiRepo hinhThucLaiRepo;
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
@@ -89,6 +92,12 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
                         "Sóc Trăng", "img/pic2.png");
                 khachHangRepo.save(khachHang2);
             }
+            if(khachHangRepo.findFirstBySoCmnd("386222131").orElse(null)==null) {
+                KhachHang khachHang2 = new KhachHang("Trương Tam Phong", true, "Phường 2, Sóc Trăng", "0943118119",
+                        "386222131", new SimpleDateFormat("dd/MM/yyyy").parse("24/6/1995"),
+                        "Sóc Trăng", "img/pic3.png");
+                khachHangRepo.save(khachHang2);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -104,14 +113,27 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
             loaiHoSoRepo.save(loaiHoSo2);
         }
 
+        if(hinhThucLaiRepo.findFirstByTenHinhThuc("Lãi gộp chia đều").orElse(null) == null) {
+            HinhThucLai hinhThucLai1 = new HinhThucLai("Lãi gộp chia đều", "Lãi cộng gốc chia đều trên kỳ hạn");
+            hinhThucLaiRepo.save(hinhThucLai1);
+        }
+        if(hinhThucLaiRepo.findFirstByTenHinhThuc("Giảm dần theo dư nợ").orElse(null) == null) {
+            HinhThucLai hinhThucLai2 = new HinhThucLai("Giảm dần theo dư nợ", "");
+            hinhThucLaiRepo.save(hinhThucLai2);
+        }
+        if(hinhThucLaiRepo.findFirstByTenHinhThuc("Lãi tháng gốc cuối kỳ").orElse(null) == null) {
+            HinhThucLai hinhThucLai3 = new HinhThucLai("Lãi tháng gốc cuối kỳ", "");
+            hinhThucLaiRepo.save(hinhThucLai3);
+        }
+
         // Create Role
         Role roleAdmin = createRoleIfNotFound(RoleName.ROLE_ADMIN, "Quản lý việc sử dụng hệ thống của người dùng, " +
                 "trạng thái băng thông, khả năng sẵn dùng của hệ thống");
         Role roleGiamDoc = createRoleIfNotFound(RoleName.ROLE_GIAMDOC, "Giám đốc công ty, duyệt mức vay của hồ sơ");
         Role roleTinDung = createRoleIfNotFound(RoleName.ROLE_TINDUNG, "Quản lý khách hàng và hồ sơ");
         Role roleThuNgan = createRoleIfNotFound(RoleName.ROLE_THUNGAN, "Thu tiền từ nhân viên thu lãi");
-        Role roleXemLai = createRoleIfNotFound(RoleName.ROLE_XEMLAI, "Người dùng có thể xem thông tin nộp lãi của " +
-                "một hồ sơ");
+        Role roleCongTacVien = createRoleIfNotFound(RoleName.ROLE_CONGTACVIEN,
+                "Khi đi thu tiền, người dùng có thể xem thông tin nộp lãi của một hồ sơ");
 
         User user = createUserIfNotFound("admin1987", "Password87","admin87@gmail.com",
                 "Thế", "Trương Hữu", new HashSet<>(Arrays.asList(roleAdmin)));
@@ -119,9 +141,10 @@ public class InitDataDb implements ApplicationListener<ContextRefreshedEvent> {
                     "Tín dụng", "Nhân viên", new HashSet<>(Collections.singletonList(roleTinDung)));
         User giamDoc = createUserIfNotFound("giamdoc87", "Password87", "giamdoc87@gmail.com",
                 "Giám", "Đốc", new HashSet<>(Collections.singletonList(roleGiamDoc)));
-        User thuNgan = createUserIfNotFound("thungan87", "Password87", "giamdoc@gmail.com",
+        User thuNgan = createUserIfNotFound("thungan87", "Password87", "thungan87@gmail.com",
                 "Thu", "Ngân", new HashSet<>(Collections.singletonList(roleThuNgan)));
-
+        User congTacVien = createUserIfNotFound("congtacvien87", "Password87", "congtacvien87@gmail.com",
+                "Cộng tác", "Viên", new HashSet<>(Collections.singletonList(roleCongTacVien)));
 
     }
 

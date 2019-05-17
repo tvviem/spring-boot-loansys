@@ -53,11 +53,15 @@ public class HoSo {
     @Column(name = "khach_muon_vay", precision = 12)
     private BigDecimal khachMuonVay;
 
-    @Column(name = "ky_han", columnDefinition = "TINYINT(3)")
-    private int kyHan;
+    @Column(name = "ky_han", columnDefinition = "SMALLINT UNSIGNED", nullable = false)
+    private int kyHan; // 30 ngay, 60 ng, 90 ... 270 ngay
 
-    @Column(name = "muc_lai_suat", precision = 7, scale = 5, nullable = false)
-    private BigDecimal mucLaiSuat;
+    @Column(name = "muc_lai_suat", columnDefinition = "TINYINT UNSIGNED", nullable = false)
+    private int mucLaiSuat;
+
+    @Column(name = "muc_hoa_hong", columnDefinition = "TINYINT UNSIGNED", nullable = false)
+    @Range(min = 1, max = 10, message = "tongVayQuyDinh from 1% to 10%")
+    private int mucHoaHong; // Mức chi hoa hồng cho người được cử đi thu tiền
 
     @Column(name = "giam_doc_duyet", precision = 12)
     private BigDecimal giamDocDuyet;
@@ -81,6 +85,10 @@ public class HoSo {
     @ManyToOne
     @JoinColumn(name="id_loai_hs", nullable = false)
     private LoaiHoSo loaiHoSo;
+
+    @ManyToOne
+    @JoinColumn(name="id_hinh_thuc_lai", nullable = false)
+    private HinhThucLai hinhThucLai;
 
     // QUAN HE VOI BANG tai_san_ho_so
     @NotEmpty

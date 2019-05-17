@@ -15,6 +15,8 @@ public interface HoSoService {
     /** Quyen nhan vien gom cac thao tac */
     // Tao ho so voi cac thong tin thuoc quyen nhan vien
     HoSo taoHoSo(HoSoNhanVienRoleDto hoSoNhanVienRoleDto);
+    // Cap nhat ho so boi nhanVien role
+    HoSo updateHoSoById(Long hoSoId, HoSoNhanVienRoleDto hoSoNhanVienRoleDto);
     // Cap nhat thong tin khac cua ho so doi voi quyen giam doc
     HoSo pheDuyetHoSo(Long hoSoId, HoSoGiamDocRoleDto hoSoGiamDocRoleDto);
     // Ho so duoc cap nhat boi thu ngan
@@ -32,4 +34,11 @@ public interface HoSoService {
     Iterable<HoSo> getHoSosByNgayTao(Date ngayTao);
     // Tra ve tong gia tri duoc phep vay cua mot tai san trong cac ho so con no
     BigDecimal getTongDuocPhepVayOfTaiSanInHoSo(Long taiSanId);
+
+    // Xac dinh tong so ngay nop hien tai cua ho so
+    //int getTongSoNgayDaNop(Long hoSoId);
+
+    // Lay cac ho so con no
+
+    // ...
 }
