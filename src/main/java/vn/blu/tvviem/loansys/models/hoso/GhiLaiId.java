@@ -13,6 +13,7 @@ import java.util.Date;
 
 @Embeddable
 @Data
+//@AllArgsConstructor
 public class GhiLaiId implements Serializable {
     @ManyToOne
     @JoinColumn(name="id_ho_so")

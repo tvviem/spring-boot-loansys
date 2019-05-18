@@ -9,6 +9,7 @@ import vn.blu.tvviem.loansys.models.baomat.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -16,7 +17,7 @@ import java.util.Date;
 @Table(name = "ghi_lai")
 @EntityListeners(AuditingEntityListener.class)
 @Data @NoArgsConstructor
-public class GhiLai {
+public class GhiLai implements Serializable {
     @EmbeddedId
     private GhiLaiId id;
 

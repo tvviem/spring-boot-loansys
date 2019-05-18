@@ -170,7 +170,7 @@ public class HoSoServiceImpl implements HoSoService {
     @Transactional
     public HoSo thuNganHoSo(Long hoSoId, HoSoThuNganRoleDto hoSoThuNganRoleDto) {
         HoSo hoSoSearchToUpdate = hoSoRepo.findById(hoSoId).orElse(null);
-        if(hoSoSearchToUpdate!=null) {
+        if(hoSoSearchToUpdate!=null && hoSoSearchToUpdate.isDaDuyet() && !hoSoSearchToUpdate.isDaGiaiNgan()) {
             hoSoSearchToUpdate.setDaGiaiNgan(hoSoThuNganRoleDto.isDaGiaiNgan());
             hoSoSearchToUpdate.setDaKeDuNo(hoSoThuNganRoleDto.isDaKeDuNo());
             hoSoSearchToUpdate.setDaThuHoiNo(hoSoThuNganRoleDto.isDaThuHoiNo());

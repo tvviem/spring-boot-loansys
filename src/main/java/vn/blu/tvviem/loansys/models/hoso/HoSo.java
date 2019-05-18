@@ -60,7 +60,7 @@ public class HoSo {
     private int mucLaiSuat;
 
     @Column(name = "muc_hoa_hong", columnDefinition = "TINYINT UNSIGNED", nullable = false)
-    @Range(min = 1, max = 10, message = "tongVayQuyDinh from 1% to 10%")
+    @Range(min = 1, max = 10, message = "mucHoaHong from 1% to 10%")
     private int mucHoaHong; // Mức chi hoa hồng cho người được cử đi thu tiền
 
     @Column(name = "giam_doc_duyet", precision = 12)
@@ -111,6 +111,7 @@ public class HoSo {
     private User nhanVienTinDung;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
+    @JsonIgnore
     private boolean deleted;
 
     @Temporal(TemporalType.TIMESTAMP)

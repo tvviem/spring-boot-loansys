@@ -68,7 +68,8 @@ public class TaiSanServiceImpl implements TaiSanService {
     // Tim mot tai san voi id
     @Override
     public TaiSan findOneByTaiSanId(Long taiSanId) {
-        return taiSanRepo.getOne(taiSanId);
+        return taiSanRepo.findById(taiSanId).orElseThrow(() -> new EntityNotFoundException(TaiSan.class,
+                "taiSanId", taiSanId + " KO TON TAI"));
     }
 
     @Override
@@ -86,7 +87,7 @@ public class TaiSanServiceImpl implements TaiSanService {
 
         TaiSan taiSanUpdated =
                 taiSanRepo.findById(taiSanId).orElseThrow(() -> new EntityNotFoundException(TaiSan.class,
-                "taiSanId", "tim thay TaiSan taiSanId="+ taiSanId));
+                "taiSanId", "KO tim thay TaiSan taiSanId="+ taiSanId));
 
         KhachHang khachHang = khachHangRepo.findById(newTaiSanDto.getKhachHangId()).orElse(null);
         LoaiTaiSan loaiTaiSan = loaiTaiSanRepo.findById(newTaiSanDto.getLoaiTaiSanId()).orElse(null);

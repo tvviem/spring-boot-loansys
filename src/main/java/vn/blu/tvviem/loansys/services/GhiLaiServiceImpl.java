@@ -1,6 +1,6 @@
 package vn.blu.tvviem.loansys.services;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.blu.tvviem.loansys.models.hoso.GhiLai;
 import vn.blu.tvviem.loansys.models.hoso.HoSo;
@@ -16,16 +16,19 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Service
-@RequiredArgsConstructor
 public class GhiLaiServiceImpl implements GhiLaiService {
 
+    @Autowired
     private HoSoService hoSoService;
+    @Autowired
     private GhiLaiRepo ghiLaiRepo;
 
     @Override
     public GhiLai nopLai(GhiLaiDto ghiLaiDto) {
         HoSo hoSoSearch = hoSoService.findOneHoSoById(ghiLaiDto.getHoSoId());
         if(hoSoSearch!=null) {
+            System.out.println("INSIDE - SEARCHED HOSO");
+
             if(hoSoSearch.getKyHan() < (tongNgayDaNop(hoSoSearch.getId()) + ghiLaiDto.getSoNgayNop())) {
                 return null; // số ngày nộp vượt quá kỳ hạn
             }
@@ -63,7 +66,7 @@ public class GhiLaiServiceImpl implements GhiLaiService {
     }
 
     @Override
-    public int tongNgayDaNop(Long hoSoId) {
+    public Integer tongNgayDaNop(Long hoSoId) {
         return ghiLaiRepo.sumSoNgayNopByHoSoId(hoSoId);
     }
 }

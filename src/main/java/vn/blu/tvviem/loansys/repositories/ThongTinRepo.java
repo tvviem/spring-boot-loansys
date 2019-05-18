@@ -11,4 +11,6 @@ public interface ThongTinRepo extends JpaRepository<ThongTin, Integer> {
     List<ThongTin> findByLoaiTaiSanId(Integer loaiTaiSanId);
     // Su dung trong ThongTin
     Optional<ThongTin> findByIdAndLoaiTaiSanId(Integer id, Integer loaiTaiSanId);
+    // Tim thong tin da co ten va loai tai san
+    Optional<ThongTin> findByTenThongTinAndLoaiTaiSanId(String tenThongTin, Integer loaiTaiSanId);
 }

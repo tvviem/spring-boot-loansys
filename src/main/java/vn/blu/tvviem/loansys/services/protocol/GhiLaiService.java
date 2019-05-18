@@ -11,5 +11,5 @@ public interface GhiLaiService {
     // Xac dinh LAI tren don vi ngay
     BigDecimal xacDinhTienLaiGop(BigDecimal tongTienVay, int mucLaiSuat, int kyHan, int hinhThucLaiId);
     // Kiem tra tong so ngay nop cua mot ho so
-    int tongNgayDaNop(Long hoSoId);
+    Integer tongNgayDaNop(Long hoSoId);
 }

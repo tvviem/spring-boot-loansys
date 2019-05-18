@@ -1,6 +1,6 @@
 package vn.blu.tvviem.loansys.controllers.api;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,9 +12,11 @@ import vn.blu.tvviem.loansys.web.dto.GhiLaiDto;
 
 @RestController
 @RequestMapping("/v1")
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 public class GhiLaiRest {
-    private final GhiLaiService ghiLaiService;
+
+    @Autowired
+    private GhiLaiService ghiLaiService;
 
     @PostMapping("/noplai")
     public ResponseEntity<?> ghiLai(@RequestBody GhiLaiDto ghiLaiDto) {
