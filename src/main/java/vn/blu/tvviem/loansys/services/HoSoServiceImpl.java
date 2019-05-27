@@ -97,7 +97,7 @@ public class HoSoServiceImpl implements HoSoService {
             hoSoSearch =
                     hoSoRepo.findByIdAndNhanVienTinDung_Id(hoSoId, nhanVien.getId()).orElseThrow(javax.persistence.EntityNotFoundException::new);
         }
-        if(hoSoSearch!=null) {
+        if(hoSoSearch!=null && !hoSoSearch.isDaDuyet()) { // HO SO CHUA DUYET
             LoaiHoSo loaiHoSo = loaiHoSoService.getOneLoaiHS(hoSoNhanVienRoleDto.getLoaiHoSoId());
             if(loaiHoSo!=null) {
                 hoSoSearch.setLoaiHoSo(loaiHoSo);

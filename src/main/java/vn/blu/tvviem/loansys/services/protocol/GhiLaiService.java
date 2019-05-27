@@ -12,4 +12,8 @@ public interface GhiLaiService {
     BigDecimal xacDinhTienLaiGop(BigDecimal tongTienVay, int mucLaiSuat, int kyHan, int hinhThucLaiId);
     // Kiem tra tong so ngay nop cua mot ho so
     Integer tongNgayDaNop(Long hoSoId);
+    // Tra ve chi tiet nop lai cua mot hoso
+    Iterable<GhiLai> layChiTietGhiLai(Long hoSoId);
+    // Xoa mot thong tin nop lai
+    boolean xoaThongTinGhiLai(Long id);
 }

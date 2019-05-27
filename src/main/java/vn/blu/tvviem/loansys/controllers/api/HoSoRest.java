@@ -38,9 +38,11 @@ public class HoSoRest {
 
     @Transactional
     @PutMapping("/hosos/{hoSoId}")
-    public ResponseEntity<HoSo> updateHoSo(@PathVariable Long hoSoId,
+    public ResponseEntity<?> updateHoSo(@PathVariable Long hoSoId,
                                                @Valid @RequestBody HoSoNhanVienRoleDto hoSoNhanVienRoleDto) {
         HoSo hoSoUpdated = hoSoService.updateHoSoById(hoSoId, hoSoNhanVienRoleDto);
+        if(hoSoUpdated==null)
+            return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(hoSoUpdated);
     }
 
