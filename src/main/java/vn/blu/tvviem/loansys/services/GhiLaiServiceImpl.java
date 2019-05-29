@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.blu.tvviem.loansys.models.baomat.User;
 import vn.blu.tvviem.loansys.models.hoso.GhiLai;
 import vn.blu.tvviem.loansys.models.hoso.HoSo;
@@ -30,6 +31,7 @@ public class GhiLaiServiceImpl implements GhiLaiService {
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public GhiLai nopLai(GhiLaiDto ghiLaiDto) {
         HoSo hoSoSearch = hoSoService.findOneHoSoById(ghiLaiDto.getHoSoId());
         if(hoSoSearch!=null && hoSoSearch.isDaDuyet()) {
@@ -124,5 +126,10 @@ public class GhiLaiServiceImpl implements GhiLaiService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public GhiLai getGhiLai(Long id) {
+        return ghiLaiRepo.findById(id).orElse(null);
     }
 }

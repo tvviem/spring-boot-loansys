@@ -16,4 +16,6 @@ public interface GhiLaiService {
     Iterable<GhiLai> layChiTietGhiLai(Long hoSoId);
     // Xoa mot thong tin nop lai
     boolean xoaThongTinGhiLai(Long id);
+
+    GhiLai getGhiLai(Long id);
 }

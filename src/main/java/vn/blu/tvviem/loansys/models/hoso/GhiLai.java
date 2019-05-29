@@ -27,6 +27,7 @@ public class GhiLai implements Serializable {
     @ManyToOne
     @JoinColumn(name="id_ho_so", nullable = false)
     @NotNull
+    @JsonIgnore
     private HoSo hoSo;
 
     @Temporal(TemporalType.TIMESTAMP)
