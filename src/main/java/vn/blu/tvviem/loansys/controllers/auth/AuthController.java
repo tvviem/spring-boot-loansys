@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1")
 class AuthController {
 
     @Autowired
@@ -32,7 +32,7 @@ class AuthController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/signin")
+    @PostMapping("/user/signin")
     public ResponseEntity signin(@RequestBody AuthRequestInfo data) {
 
         try {
