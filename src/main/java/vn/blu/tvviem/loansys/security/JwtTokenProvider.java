@@ -80,18 +80,14 @@ public class JwtTokenProvider {
 
     /**
      * @param token The bai gui tu client de chung thuc
-     * @return true if token valid, else user can not use api resources
+     * @return true if token valid, else user can not use api resources because expired
      * */
     boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (RuntimeException e) {
+            throw new InvalidJwtAuthenticationException("Invalid JWT token");
         }
     }
 }

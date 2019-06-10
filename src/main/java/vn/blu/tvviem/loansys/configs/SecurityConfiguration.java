@@ -1,11 +1,10 @@
 package vn.blu.tvviem.loansys.configs;
 
+import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import vn.blu.tvviem.loansys.security.JwtConfigurer;
 import vn.blu.tvviem.loansys.security.JwtTokenProvider;
 
@@ -56,10 +54,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //@formatter:off
-        http
+        http.cors().and()
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -75,11 +72,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         //@formatter:on
     }
 
-    @Bean
+    /*@Bean
     CorsConfigurationSource corsConfigurationSource()
     {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
+        System.out.println(domainsAllowed[0]);
         configuration.setAllowedOrigins(Arrays.asList(domainsAllowed));
         configuration.setAllowedMethods(Arrays.asList("GET","POST"));
         //configuration.setAllowedMethods(Collections.singletonList("*"));
@@ -91,6 +89,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         FilterRegistrationBean bean = new FilterRegistrationBean<>(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
+        return source;
+    }*/
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        //configuration.setAllowedOrigins(ImmutableList.of("http://localhost:8080","http://localhost:8084"));
+        //configuration.setAllowedOrigins(ImmutableList.of("*"));
+        // Arrays.stream(domainsAllowed).forEach(System.out::println);
+        configuration.setAllowedOrigins(Arrays.asList(domainsAllowed));
+        configuration.setAllowedMethods(ImmutableList.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

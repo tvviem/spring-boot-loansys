@@ -18,7 +18,6 @@ import java.util.Set;
 @Getter @Setter @NoArgsConstructor
 @Entity
 @Table(name = "khach_hang", indexes = @Index(name = "idx", columnList = "ho_ten,so_dien_thoai"))
-// @EntityListeners(AuditingEntityListener.class) // dùng để tạo CreatedDate and Last...
 public class KhachHang extends AuditModel {
     private static final long serialVersionUID = -9179396662373251049L;
     @Id

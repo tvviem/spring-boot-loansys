@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
@@ -20,7 +21,7 @@ import java.util.TimeZone;
         LoansysApplication.class,
         Jsr310JpaConverters.class
 })
-// @EnableJpaAuditing // dùng cho tao @CreatedDate and @LastModifiedDate
+@EnableJpaAuditing // dùng cho tao @CreatedDate and @LastModifiedDate
 public class LoansysApplication {
 
 	@Autowired

@@ -25,10 +25,13 @@ public class JwtTokenFilter extends GenericFilterBean {
 
         // Phan giai noi dung tu user
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        }
+
+        if (token != null)
+            if (jwtTokenProvider.validateToken(token)) {
+                Authentication auth = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(auth); // xac nhan duoc thong tin chung thuc
+            } else
+                throw new InvalidJwtAuthenticationException("JWT token out of date");
 
         filterChain.doFilter(req, res);
     }

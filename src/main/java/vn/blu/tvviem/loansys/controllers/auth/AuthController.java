@@ -34,7 +34,6 @@ class AuthController {
 
     @PostMapping("/user/signin")
     public ResponseEntity signin(@RequestBody AuthRequestInfo data) {
-
         try {
             String username = data.getUsername();
             // Chung thuc thong tin
