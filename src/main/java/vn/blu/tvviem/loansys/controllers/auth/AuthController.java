@@ -24,13 +24,13 @@ import java.util.Map;
 class AuthController {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @PostMapping("/user/signin")
     public ResponseEntity signin(@RequestBody AuthRequestInfo data) {
@@ -49,7 +49,6 @@ class AuthController {
             model.put("username", username);
             model.put("token", token);
             return ResponseEntity.ok(model);
-            //}
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }

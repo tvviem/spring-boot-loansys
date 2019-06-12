@@ -16,8 +16,10 @@ public class JwtConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilt
 
     @Override
     public void configure(HttpSecurity http) {
+        System.out.println("!!!INSIDE JwtConfigurer!!!");
         JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
         // xu ly loc chung thuc truoc khi truy xuat tai nguyen
-        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

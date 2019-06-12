@@ -1,5 +1,7 @@
 package vn.blu.tvviem.loansys.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -10,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -223,13 +227,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     // 401 : User chua chung thuc thong tin dang nhap hoac TIMEOUT token
-    @ExceptionHandler(InvalidJwtAuthenticationException.class)
-    public ResponseEntity<Object> handleErrorJwtTokenInvalid(final InvalidJwtAuthenticationException ex,
+    @ExceptionHandler({InvalidJwtAuthenticationException.class, BadCredentialsException.class,
+            ExpiredJwtException.class, SignatureException.class})
+    public ResponseEntity<Object> handleErrorJwtTokenInvalid(final AuthenticationException ex,
                                                              final WebRequest request) {
 
         final ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex);
         apiError.setMessage(ex.getMessage());
-        // return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
         return buildResponseEntity(apiError);
     }
 

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import vn.blu.tvviem.loansys.exceptions.JwtAuthenticationEntryPoint;
 import vn.blu.tvviem.loansys.security.JwtConfigurer;
 import vn.blu.tvviem.loansys.security.JwtTokenProvider;
 
@@ -51,46 +52,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //@formatter:off
-        http.cors().and()
-                .httpBasic().disable()
-                .csrf().disable()
+        http.cors().and().httpBasic().disable().csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                //.antMatchers("/**").permitAll() // Test api nhanh, API hoat dong hoan chinh, DELETE DONG NAY
                 .antMatchers("/v1/user/signin").permitAll()
-                //.antMatchers(HttpMethod.GET, "/khachhangs/**").permitAll()
-                //.antMatchers(HttpMethod.DELETE, "/khanghangs/**").hasRole("ADMIN")
-                //.antMatchers(HttpMethod.GET, "/taisans/**").hasRole("ADMIN")
+                //.antMatchers("/**").permitAll() // Test api nhanh, API hoat dong hoan chinh, DELETE DONG NAY
                 .antMatchers("/error").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
         //@formatter:on
+        // disable page caching
+        http.headers().cacheControl();
     }
 
-    /*@Bean
-    CorsConfigurationSource corsConfigurationSource()
-    {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
-        System.out.println(domainsAllowed[0]);
-        configuration.setAllowedOrigins(Arrays.asList(domainsAllowed));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
-        //configuration.setAllowedMethods(Collections.singletonList("*"));
-        //configuration.setAllowedHeaders(Collections.singletonList("*"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
-        FilterRegistrationBean bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-
-        return source;
-    }*/
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();

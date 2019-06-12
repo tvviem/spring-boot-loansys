@@ -1,6 +1,7 @@
 package vn.blu.tvviem.loansys.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,7 @@ public class JwtTokenProvider {
 
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
+    @Value("${security.jwt.token.expire-length}") // 30m
     private long validityInMilliseconds; // 900000ms = 15 minute
 
     @Qualifier("customUserDetailsService")
@@ -82,12 +83,29 @@ public class JwtTokenProvider {
      * @param token The bai gui tu client de chung thuc
      * @return true if token valid, else user can not use api resources because expired
      * */
-    boolean validateToken(String token) {
+    boolean validateToken(String token, HttpServletRequest httpServletRequest) {
         try {
+            System.out.println("BEFORE setSigningKey INSIDE VALIDATE TOKEN ---!!!!");
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (RuntimeException e) {
-            throw new InvalidJwtAuthenticationException("Invalid JWT token");
+            System.out.println("AFTER setSigningKey INSIDE VALIDATE TOKEN ---!!!!");
+            //return !claims.getBody().getExpiration().before(new Date());
+            return true;
+        } catch (ExpiredJwtException e) {
+            // Token out of date
+            httpServletRequest.setAttribute("expired", e.getMessage());
+        } catch (MalformedJwtException ex){
+            // Invalid token, maybe token's structure wrong
+            httpServletRequest.setAttribute("invalid_token", ex.getMessage());
+        } catch (SignatureException se) { // when error in token string
+            // invalid_signature, can not decode with secret key
+            httpServletRequest.setAttribute("invalid_signature", se.getMessage());
+        } catch (IllegalArgumentException ie){
+            // JWT claims string is empty
+            httpServletRequest.setAttribute("jwt_claims_empty", ie.getMessage());
+        } catch (UnsupportedJwtException ex){
+            // Unsupported JWT Exception
+            httpServletRequest.setAttribute("unsupported", ex.getMessage());
         }
+        return false;
     }
 }
